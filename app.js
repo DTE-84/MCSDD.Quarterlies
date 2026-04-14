@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────
 //  Quarterly Pro | MCSDD Compliance Engine
-//  app.js v1.0 — Satellite Node
+//  app.js v1.6 — High-Fidelity Satellite Node
 //  © 2024-2026 DTE Solutions. All Rights Reserved.
 // ─────────────────────────────────────────────
 
@@ -10,7 +10,7 @@ let trackedServices = [];
 let muiLog = [];
 let prevQuarterNarrative = ""; 
 
-// ── STAFF DIRECTORY (Simulated Employees Table) ──
+// ── STAFF DIRECTORY (Relational Simulation) ──
 const STAFF_DB = [
     { id: 1, name: "Cathy Arrowsmith", title: "Executive Director", email: "carrowsmith@mcsdd.com", isSupervisor: true },
     { id: 2, name: "Mahogany Wallis", title: "Support Coordination Supervisor", email: "mwallis@mcsdd.com", isSupervisor: true },
@@ -18,10 +18,130 @@ const STAFF_DB = [
     { id: 4, name: "Generic SC", title: "Support Coordinator I", email: "staff@mcsdd.com", isSupervisor: false, reportsTo: 2 }
 ];
 
-const MUI_CATEGORIES = [
-// ... (rest of categories)
+// ── SERVICE DATABASE (2025 Missouri DD Standard) ──
+const SERVICES_DB = [
+    {"code": "H2015", "name": "Individualized Supported Living (ISL)", "unit": "15-min / Per Diem", "category": "Residential"},
+    {"code": "T1019", "name": "Personal Assistant", "unit": "15-min", "category": "Personal Support"},
+    {"code": "T2021", "name": "Day Habilitation", "unit": "15-min", "category": "Day Services"},
+    {"code": "H2021", "name": "Community Networking", "unit": "15-min", "category": "Day Services"},
+    {"code": "S0215", "name": "Transportation (Mileage)", "unit": "Per Mile", "category": "Transportation"},
+    {"code": "T2003", "name": "Transportation (Public/Other)", "unit": "Per Trip", "category": "Transportation"},
+    {"code": "T2022", "name": "Job Development", "unit": "Per Event / Hour", "category": "Employment"},
+    {"code": "H2025", "name": "Supported Employment", "unit": "15-min", "category": "Employment"},
+    {"code": "T2020", "name": "Shared Living (Host Home)", "unit": "Per Diem", "category": "Residential"},
+    {"code": "S5150", "name": "Respite Care (In-Home)", "unit": "15-min", "category": "Crisis/Respite"},
+    {"code": "T1005", "name": "Respite Care (Out-of-Home)", "unit": "15-min", "category": "Crisis/Respite"}
+];
 
-// ... (existing SERVICES_DB and init) ...
+const MUI_CATEGORIES = [
+    "Accidental Injury", "Aggressive Behavior", "Fall (with injury)", 
+    "Medication Error", "Missing Person", "Physical/Verbal Abuse", "Unexplained Injury"
+];
+
+function init() {
+    console.log("Quarterly Pro Engine v1.6: Online");
+    populateStaffSelection();
+    updateUI();
+}
+
+function populateStaffSelection() {
+    const scDropdown = document.getElementById('scName');
+    if (!scDropdown) return;
+    scDropdown.innerHTML = '<option value="">Select Coordinator...</option>' + 
+        STAFF_DB.map(s => `<option value="${s.id}">${s.name} (${s.isSupervisor ? 'Supervisor' : 'SC'})</option>`).join("");
+}
+
+// ── SERVICE UTILIZATION ──
+function addServiceRow() {
+    trackedServices.push({
+        id: Date.now(),
+        serviceCode: "",
+        auth: 0,
+        used: 0,
+        isTelehealth: false,
+        varianceNote: ""
+    });
+    renderServices();
+    updateUI();
+}
+
+function removeServiceRow(id) {
+    trackedServices = trackedServices.filter(s => s.id !== id);
+    renderServices();
+    updateUI();
+}
+
+function updateServiceField(id, field, val) {
+    const s = trackedServices.find(x => x.id === id);
+    if (s) {
+        if (field === 'auth' || field === 'used') {
+            s[field] = parseFloat(val) || 0;
+        } else if (field === 'isTelehealth') {
+            s[field] = val;
+        } else {
+            s[field] = val;
+        }
+    }
+    renderServices();
+    updateUI();
+}
+
+function calculateVariance(auth, used) {
+    if (!auth || auth == 0) return 0;
+    return ((used - auth) / auth) * 100;
+}
+
+function renderServices() {
+    const container = document.getElementById('utilizationContainer');
+    if (!container) return;
+    if (!trackedServices.length) {
+        container.innerHTML = '<p class="section-hint">No services currently tracked for this quarter.</p>';
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="utilization-grid-header" style="display: grid; grid-template-columns: 2.5fr 0.8fr 1fr 1fr 1fr 2fr auto; gap: 10px; margin-bottom: 10px; font-size: 10px; font-weight: 800; color: var(--text-label); text-transform: uppercase; align-items: center;">
+            <div>Service / Code</div>
+            <div style="text-align:center">GT</div>
+            <div>Auth Units</div>
+            <div>Used Units</div>
+            <div>Remaining</div>
+            <div>Variance/Justification</div>
+            <div></div>
+        </div>
+    ` + trackedServices.map(s => {
+        const serviceObj = SERVICES_DB.find(obj => obj.code === s.serviceCode);
+        const remaining = (s.auth || 0) - (s.used || 0);
+        const is15Min = serviceObj?.unit.includes("15-min");
+        const hoursUsed = is15Min ? ((s.used || 0) / 4).toFixed(2) : null;
+        const variance = calculateVariance(s.auth, s.used);
+        const hasHighVariance = Math.abs(variance) >= 10;
+
+        return `
+        <div class="service-row" style="display: grid; grid-template-columns: 2.5fr 0.8fr 1fr 1fr 1fr 2fr auto; gap: 10px; margin-bottom: 10px; align-items: start;">
+            <select onchange="updateServiceField(${s.id}, 'serviceCode', this.value)">
+                <option value="">Select Service...</option>
+                ${SERVICES_DB.map(obj => `
+                    <option value="${obj.code}" ${s.serviceCode === obj.code ? 'selected' : ''}>${obj.name} (${obj.code})</option>
+                `).join('')}
+            </select>
+            <div style="text-align:center; padding-top: 10px;">
+                <input type="checkbox" ${s.isTelehealth ? 'checked' : ''} onchange="updateServiceField(${s.id}, 'isTelehealth', this.checked)" title="Telehealth GT Modifier">
+            </div>
+            <input type="number" value="${s.auth}" oninput="updateServiceField(${s.id}, 'auth', this.value)" placeholder="Auth">
+            <div>
+                <input type="number" value="${s.used}" oninput="updateServiceField(${s.id}, 'used', this.value)" placeholder="Used">
+                ${hoursUsed ? `<div style="font-size: 9px; color: var(--primary); margin-top: 4px;">≈ ${hoursUsed} Hours</div>` : ''}
+            </div>
+            <div style="padding-top: 10px; font-weight: 700; color: ${remaining < 0 ? 'var(--danger)' : 'var(--success)'}; font-size: 13px; text-align: center;">
+                ${remaining}
+            </div>
+            <textarea style="min-height: 40px; padding: 8px; font-size: 11px; border-color: ${hasHighVariance && !s.varianceNote ? 'var(--danger)' : 'var(--border)'}" 
+                placeholder="Justification if >10% variance..." oninput="updateServiceField(${s.id}, 'varianceNote', this.value)">${s.varianceNote || ""}</textarea>
+            <button class="remove-rep-btn" onclick="removeServiceRow(${s.id})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:18px; padding-top: 5px;">×</button>
+        </div>
+    `}).join("");
+}
 
 // ── MUI/UI LOG ENGINE ──
 function addMuiEntry() {
@@ -53,6 +173,7 @@ function updateMuiField(id, field, val) {
 
 function renderMuiLog() {
     const container = document.getElementById('muiLogContainer');
+    if (!container) return;
     if (!muiLog.length) {
         container.innerHTML = '<p class="section-hint">No MUIs or incidents logged this quarter.</p>';
         return;
@@ -93,12 +214,94 @@ function renderMuiLog() {
     `}).join("");
 }
 
+// ── PCSP INGESTION ENGINE ──
+function triggerPcspImport() {
+    document.getElementById('pcspImport').click();
+}
+
+function handlePcspImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            processLinkedPcsp(data);
+        } catch (err) {
+            alert("Error: Corrupted PCSP signal detected.");
+        }
+    };
+    reader.readAsText(file);
+}
+
+function processLinkedPcsp(data) {
+    linkedPcsp = data;
+    
+    document.getElementById('display-name').textContent = (data.coverLegalName || "Unknown").toUpperCase();
+    document.getElementById('display-dob').textContent = data.clientDOB || "—";
+    document.getElementById('display-dmh').textContent = data.coverDmhID || "—";
+    
+    activeGoals = data._goalsData || [];
+    renderOutcomes();
+    
+    if (data.coordinator) {
+        const staff = STAFF_DB.find(s => s.name.toLowerCase().includes(data.coordinator.toLowerCase()));
+        if (staff) {
+            document.getElementById('scName').value = staff.id;
+        }
+    }
+    
+    updateUI();
+}
+
+function renderOutcomes() {
+    const container = document.getElementById('outcomesContainer');
+    if (!container) return;
+    if (!activeGoals.length) {
+        container.innerHTML = '<p class="section-hint">Linked PCSP contains no active goals in Section 17.</p>';
+        return;
+    }
+
+    container.innerHTML = activeGoals.map((goal, idx) => `
+        <div class="outcome-card">
+            <div class="outcome-header">
+                <span class="outcome-domain">${goal.domain || "Life Domain"}</span>
+                <span class="ind-meta">Goal #${idx + 1}</span>
+            </div>
+            <div class="field-group full" style="margin-bottom: 20px;">
+                <label>PCSP Defined Outcome</label>
+                <div style="font-size: 14px; font-weight: 600; color: var(--primary);">${goal.goal}</div>
+            </div>
+            <div class="form-grid">
+                <div class="field-group">
+                    <label>Progress Status</label>
+                    <select id="goal-status-${idx}" onchange="updateUI()">
+                        <option value="Progressing">Progressing</option>
+                        <option value="Goal Met">Goal Met</option>
+                        <option value="Not Started">Not Started</option>
+                        <option value="Barrier Encountered">Barrier Encountered</option>
+                        <option value="Goal Discontinued">Goal Discontinued</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label>Action Step Ref</label>
+                    <input type="text" id="goal-action-${idx}" placeholder="Specific step taken..." oninput="updateUI()">
+                </div>
+                <div class="field-group full">
+                    <label>Supporting Narrative</label>
+                    <textarea id="goal-note-${idx}" placeholder="Describe actions taken and results achieved..." oninput="updateUI()"></textarea>
+                </div>
+            </div>
+        </div>
+    `).join("");
+}
+
 // ── QUALITY AUDIT ENGINE ──
 function runQualityAudit() {
     const flags = [];
     const getVal = (id) => document.getElementById(id)?.value || "";
     
-    // 1. 10% Variance Check
     trackedServices.forEach((s) => {
         const variance = calculateVariance(s.auth, s.used);
         if (Math.abs(variance) >= 10 && !s.varianceNote.trim()) {
@@ -107,31 +310,27 @@ function runQualityAudit() {
         }
     });
 
-    // 2. Person-Centered Tone Check
     const redFlagWords = ["refused", "non-compliant", "uncooperative", "failed"];
     const allText = (getVal("successStory") + " " + getVal("healthSafetyNotes")).toLowerCase();
     if (redFlagWords.some(word => allText.includes(word))) {
         flags.push(`<strong>Tone Check:</strong> Compliance-based language detected ("Refused"). Consider using <em>"Declined"</em> or <em>"Expressed a preference for..."</em>`);
     }
 
-    // 3. MUI 24-Hour Rule
     muiLog.forEach(m => {
         const late = checkMUILateFiling(m.discoveryDate);
         if (late.isLate && !m.lateJustification.trim()) {
-            flags.push(`<strong>MUI Critical:</strong> Incident [${m.category}] was discovered >24 hours ago. Late filing justification is mandatory for audit.`);
+            flags.push(`<strong>MUI Critical:</strong> Incident [${m.category}] was discovered >24 hours ago. Late filing justification is mandatory.`);
         }
     });
 
-    // 4. Similarity Check (Anti-Rubber Stamping)
     const currentNarrative = getVal("successStory") + getVal("healthSafetyNotes");
     if (prevQuarterNarrative && currentNarrative) {
         const score = getNarrativeSimilarity(prevQuarterNarrative, currentNarrative);
         if (score > 0.85) {
-            flags.push(`<strong>Rubber Stamping Alert:</strong> Narrative is ${(score * 100).toFixed(0)}% identical to previous data. Please add unique milestones.`);
+            flags.push(`<strong>Rubber Stamping Alert:</strong> Narrative is ${(score * 100).toFixed(0)}% identical to previous data.`);
         }
     }
 
-    // 5. Employment Discussion (Age 16+)
     if (linkedPcsp && linkedPcsp.clientDOB) {
         const age = calculateAge(linkedPcsp.clientDOB);
         if (age >= 16 && !document.getElementById('employDiscuss').checked) {
@@ -141,11 +340,13 @@ function runQualityAudit() {
 
     const panel = document.getElementById('auditPanel');
     const list = document.getElementById('auditFlags');
-    if (flags.length > 0) {
-        panel.style.display = 'block';
-        list.innerHTML = flags.map(f => `<li>${f}</li>`).join("");
-    } else {
-        panel.style.display = 'none';
+    if (panel && list) {
+        if (flags.length > 0) {
+            panel.style.display = 'block';
+            list.innerHTML = flags.map(f => `<li>${f}</li>`).join("");
+        } else {
+            panel.style.display = 'none';
+        }
     }
 }
 
@@ -170,16 +371,11 @@ function getNarrativeSimilarity(oldText, newText) {
     return commonCount / Math.min(wordsOld.size, wordsNew.size);
 }
 
-function init() {
-    console.log("Quarterly Pro Engine v1.3: Online");
-    populateStaffSelection();
-}
-
-function populateStaffSelection() {
-    const scDropdown = document.getElementById('scName');
-    if (!scDropdown) return;
-    scDropdown.innerHTML = '<option value="">Select Coordinator...</option>' + 
-        STAFF_DB.map(s => `<option value="${s.id}">${s.name} (${s.isSupervisor ? 'Supervisor' : 'SC'})</option>`).join("");
+function calculateAge(dobString) {
+    const birthday = new Date(dobString);
+    const ageDifMs = Date.now() - birthday.getTime();
+    const ageDate = new Date(ageDifMs); 
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
 
 function updateUI() {
@@ -192,9 +388,8 @@ function updateUI() {
     const scId = getVal("scName");
     const backupStatus = document.querySelector('input[name="backupCheck"]:checked')?.value || "Not Verified";
 
-    // Dynamic Staff Resolve
     const selectedSc = STAFF_DB.find(s => s.id == scId);
-    let supervisor = STAFF_DB.find(s => s.isSupervisor && s.id === 2); // Default to Mahogany Wallis
+    let supervisor = STAFF_DB.find(s => s.isSupervisor && s.id === 2); 
     if (selectedSc && selectedSc.reportsTo) {
         supervisor = STAFF_DB.find(s => s.id === selectedSc.reportsTo) || supervisor;
     }
@@ -272,59 +467,6 @@ function updateUI() {
 
     document.getElementById('narrativeDisplay').innerText = t;
     runQualityAudit();
-}
-
-// ── QUALITY AUDIT ENGINE ──
-function runQualityAudit() {
-    const flags = [];
-    const getVal = (id) => document.getElementById(id)?.value || "";
-    
-    // 1. 10% Variance Check
-    trackedServices.forEach((s, idx) => {
-        const variance = calculateVariance(s.auth, s.used);
-        if (Math.abs(variance) >= 10 && !s.varianceNote.trim()) {
-            const serviceObj = SERVICES_DB.find(obj => obj.code === s.serviceCode);
-            const name = serviceObj ? serviceObj.name : "Service";
-            flags.push(`<strong>Variance Alert:</strong> ${name} has a ${variance.toFixed(1)}% deviation. A justification narrative is mandatory.`);
-        }
-    });
-
-    // 2. Person-Centered Tone Check
-    const redFlagWords = ["refused", "non-compliant", "uncooperative", "failed"];
-    const allText = (getVal("successStory") + " " + getVal("healthSafetyNotes")).toLowerCase();
-    
-    if (redFlagWords.some(word => allText.includes(word))) {
-        flags.push(`<strong>Tone Check:</strong> "Refusal" terminology detected. Consider using <em>"Declined," "Chose an alternative,"</em> or <em>"Expressed a preference for..."</em> to maintain person-centered integrity.`);
-    }
-
-    // 3. Employment Discussion (Age 16+)
-    if (linkedPcsp && linkedPcsp.clientDOB) {
-        const age = calculateAge(linkedPcsp.clientDOB);
-        if (age >= 16 && !document.getElementById('employDiscuss').checked) {
-            flags.push(`<strong>Employment First:</strong> Individual is ${age} years old. Missouri state guidelines require competitive employment to be discussed quarterly.`);
-        }
-    }
-
-    // 4. Anti-Rubber Stamping (Similarity Check)
-    // Future: Compare against previous session storage
-    
-    // Update UI Panel
-    const panel = document.getElementById('auditPanel');
-    const list = document.getElementById('auditFlags');
-    
-    if (flags.length > 0) {
-        panel.style.display = 'block';
-        list.innerHTML = flags.map(f => `<li>${f}</li>`).join("");
-    } else {
-        panel.style.display = 'none';
-    }
-}
-
-function calculateAge(dobString) {
-    const birthday = new Date(dobString);
-    const ageDifMs = Date.now() - birthday.getTime();
-    const ageDate = new Date(ageDifMs); 
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
 
 function copyNarrative() {
