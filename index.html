@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quarterly Pro | MCSDD Compliance Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body onload="init()">
+    <div class="app-container">
+        <!-- ── Header ── -->
+        <header class="main-header" style="border-bottom: 3px solid #0056b3;">
+            <div class="logo-area">
+                <div class="logo-circle" style="background: rgba(0, 86, 179, 0.1); border-color: #0056b3;">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 5L35 30H5L20 5Z" fill="#0056b3" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="app-title" style="color: #0056b3;">Quarterly Pro</div>
+                    <div class="app-subtitle">Official MCSDD Compliance Protocol</div>
+                </div>
+            </div>
+            <div style="text-align: center; font-size: 9px; color: var(--text-label); line-height: 1.2;">
+                MARION COUNTY SERVICES FOR THE DEVELOPMENTALLY DISABLED<br>
+                12 Northport Plaza, Hannibal, MO 63401 | (573) 248-1077
+            </div>
+            <div class="header-controls">
+                <div class="hipaa-badge" style="border-color: #0056b3; color: #0056b3;">
+                    <span class="pulse-dot" style="background: #0056b3; box-shadow: 0 0 8px #0056b3;"></span>
+                    STATION SECURE
+                </div>
+                <button class="btn btn-outline" onclick="triggerPcspImport()" style="border-color: #0056b3; color: #0056b3;">
+                    📂 Link PCSP Data
+                </button>
+                <input type="file" id="pcspImport" style="display:none" accept=".pcsp" onchange="handlePcspImport(event)">
+            </div>
+        </header>
+
+        <main class="main-workspace">
+            <div class="individual-banner" id="individualBanner" style="border-left: 5px solid #0056b3;">
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <span class="ind-name" id="display-name" style="border:none; padding:0;">No PCSP Linked</span>
+                    <div style="display: flex; gap: 15px;">
+                        <span class="ind-meta">DOB: <strong id="display-dob">—</strong></span>
+                        <span class="ind-meta">DMH ID: <strong id="display-dmh">—</strong></span>
+                    </div>
+                </div>
+                <div style="margin-left: auto; text-align: right;">
+                    <span class="ind-meta">Quarter: <strong id="display-quarter">Q—</strong></span>
+                    <br>
+                    <span class="ind-meta">Coordinator: <strong id="display-sc">—</strong></span>
+                </div>
+            </div>
+
+            <!-- ── Step 1: Period & Service Context ── -->
+            <section class="form-section">
+                <div class="section-title"><span>1</span> Review Period & Service Context</div>
+                <div class="form-grid">
+                    <div class="field-group">
+                        <label>Target Quarter</label>
+                        <select id="reviewQuarter" onchange="updateUI()">
+                            <option value="Q1">Quarter 1: Jan 1 – Mar 31</option>
+                            <option value="Q2">Quarter 2: Apr 1 – Jun 30</option>
+                            <option value="Q3">Quarter 3: Jul 1 – Sep 30</option>
+                            <option value="Q4">Quarter 4: Oct 1 – Dec 31</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label>Assigned Support Coordinator (SC)</label>
+                        <select id="scName" onchange="updateUI()">
+                            <option value="">Select Coordinator...</option>
+                            <option value="Suzanne Wear">Suzanne Wear</option>
+                            <option value="Mahogany Wallis">Mahogany Wallis (Supervisor)</option>
+                            <option value="Cathy Arrowsmith">Cathy Arrowsmith (Director)</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label>Face-to-Face Date</label>
+                        <input type="date" id="visitDate" onchange="updateUI()">
+                    </div>
+                    <div class="field-group">
+                        <label>Location</label>
+                        <select id="visitLocation" onchange="updateUI()">
+                            <option value="Home">Home (Natural/Residential)</option>
+                            <option value="Community">Community</option>
+                            <option value="Office">Regional Office</option>
+                            <option value="Remote">Remote (Exception Only)</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── Step 2: Service Utilization Summary ── -->
+            <section class="form-section">
+                <div class="section-title"><span>2</span> Service Utilization (Billing Units)</div>
+                <div id="utilizationContainer"></div>
+                <button class="btn btn-outline" type="button" onclick="addServiceRow()">+ Add Service Tracking</button>
+            </section>
+
+            <!-- ── Step 3: MUI/UI Log (24-Hour Rule) ── -->
+            <section class="form-section">
+                <div class="section-title"><span>3</span> MUI/UI Log & 2025 Compliance</div>
+                <div id="muiLogContainer" style="margin-bottom: 20px;">
+                    <!-- MUI entries will go here -->
+                </div>
+                <button class="btn btn-outline" type="button" onclick="addMuiEntry()" style="margin-bottom: 20px;">+ Log Incident (MUI/UI)</button>
+
+                <div class="compliance-grid">
+                    <div class="check-item">
+                        <label class="check-label"><input type="checkbox" id="medChange" onchange="updateUI()"> Medication changes?</label>
+                    </div>
+                    <div class="check-item">
+                        <label class="check-label"><input type="checkbox" id="choiceControl" onchange="updateUI()"> Individual participated in planning?</label>
+                    </div>
+                    <div class="check-item">
+                        <label class="check-label"><input type="checkbox" id="employDiscuss" onchange="updateUI()"> Employment discussed (16+)?</label>
+                    </div>
+                </div>
+                <div class="form-grid" style="margin-top: 20px;">
+                    <div class="field-group full">
+                        <label>Health & Behavioral Summary</label>
+                        <textarea id="healthSafetyNotes" placeholder="Document specific changes, clinical summaries, or medical updates..." oninput="updateUI()"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── Step 4: Success Story ── -->
+            <section class="form-section">
+                <div class="section-title"><span>4</span> Success Story of the Quarter</div>
+                <div class="field-group full">
+                    <label>Highlighting Quality Outcomes (Hannibal Community Integration)</label>
+                    <textarea id="successStory" placeholder="Describe a specific achievement, community connection, or goal milestone..." oninput="updateUI()" style="min-height: 120px; border-left: 4px solid var(--success);"></textarea>
+                </div>
+            </section>
+
+            <!-- ── Step 5: Outcome Monitoring (Dynamic) ── -->
+            <section class="form-section" id="outcomes-section">
+                <div class="section-title"><span>5</span> Personal Outcome Progress</div>
+                <p class="section-hint">Link a .pcsp file to automatically populate active goals and implementation strategies.</p>
+                <div id="outcomesContainer" class="dynamic-container">
+                    <!-- Goals from PCSP will render here -->
+                </div>
+            </section>
+
+            <!-- ── Step 6: Backup Verification ── -->
+            <section class="form-section">
+                <div class="section-title"><span>6</span> Backup Verification</div>
+                <div class="form-grid">
+                    <div class="field-group full">
+                        <label>Is the Individualized Backup Plan still effective?</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="backupCheck" value="Yes" onchange="updateUI()"> Yes, no changes needed.</label>
+                            <label><input type="radio" name="backupCheck" value="No" onchange="updateUI()"> No, requires revision.</label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── Step 7: Certification & Signature ── -->
+            <section class="form-section">
+                <div class="section-title"><span>7</span> Certification</div>
+                <div class="certification-statement" style="font-size: 12px; color: var(--text-label); background: rgba(255,255,255,0.02); padding: 20px; border-radius: 8px; border: 1px solid var(--border); line-height: 1.6;">
+                    "I certify that the services listed above were provided in accordance with the Individual's PCSP and that all documentation is true and accurate."
+                </div>
+                <div class="form-grid" style="margin-top: 20px;">
+                    <div class="field-group">
+                        <label>Provider Signature & Title</label>
+                        <input type="text" id="signatureName" placeholder="Enter Name and Title" oninput="updateUI()">
+                    </div>
+                    <div class="field-group">
+                        <label>Date of Submission</label>
+                        <input type="date" id="submissionDate" onchange="updateUI()">
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── Audit & Validation Summary ── -->
+            <div id="auditPanel" class="audit-panel" style="display: none; margin-top: 40px; padding: 25px; background: rgba(255, 77, 77, 0.05); border: 1px solid var(--danger); border-radius: var(--radius); animation: fadeIn 0.3s ease;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                    <span style="font-size: 20px;">🚩</span>
+                    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--danger);">Audit Red Flags Detected</h3>
+                </div>
+                <ul id="auditFlags" style="font-size: 13px; color: var(--text-base); padding-left: 20px; line-height: 1.8;">
+                    <!-- Flags will be injected here -->
+                </ul>
+            </div>
+
+            <!-- ── Output Preview ── -->
+            <div class="output-section">
+                <div class="section-title" style="color: #c9a84c; border-color: #c9a84c">PROGRESS REPORT PREVIEW</div>
+                <div id="narrativeDisplay" class="narrative-box">
+                    Link a PCSP file and complete sections to generate the quarterly synthesis...
+                </div>
+                <div class="btn-bar">
+                    <button class="btn btn-primary" onclick="copyNarrative()">📋 Copy Report</button>
+                    <button class="btn btn-success" onclick="window.print()">🖨️ Print / Save PDF</button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <p>© 2024-2026 DTE Solutions. Trade Secret & Intellectual Property of Drew.</p>
+            <p>QUARTERLY PRO v1.0 | Missouri DMH/DDD Compliance Protocol</p>
+        </footer>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
