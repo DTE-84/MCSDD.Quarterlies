@@ -1,13 +1,13 @@
 :root {
-    --bg-dark: #050505;
-    --card-dark: #12100D;
-    --primary: #c9a84c;
-    --primary-dim: rgba(201, 168, 76, 0.15);
+    --bg-dark: #003366;
+    --card-dark: #0a1e33;
+    --primary: #c5a059;
+    --primary-dim: rgba(197, 160, 89, 0.15);
     --text-base: #f4f1eb;
-    --text-label: #8a8fa8;
-    --border: #2e3347;
-    --success: #2ded9c;
-    --danger: #ff4d4d;
+    --text-label: #a0aec0;
+    --border: rgba(255, 255, 255, 0.1);
+    --success: #28a745;
+    --danger: #dc3545;
     --radius: 12px;
 }
 
