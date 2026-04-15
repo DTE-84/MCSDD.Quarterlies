@@ -1,0 +1,28 @@
+{
+  "coverLegalName": "John Doe",
+  "clientDOB": "2008-01-15",
+  "coverDmhID": "12345678",
+  "coordinator": "Suzanne Wear",
+  "_goalsData": [
+    {
+      "domain": "Community Integration",
+      "goal": "John will join a local bowling league to increase social connections."
+    },
+    {
+      "domain": "Employment",
+      "goal": "John will research two local job sites per month with his support team."
+    }
+  ],
+  "_programServices": [
+    {
+      "service": "Individualized Supported Living (ISL)",
+      "provider": "Helping Hands Inc",
+      "funding": "Waiver"
+    },
+    {
+      "service": "Day Habilitation",
+      "provider": "Community Hub",
+      "funding": "Waiver"
+    }
+  ]
+}

@@ -97,14 +97,17 @@
 
             <!-- ── Step 2: Service Utilization Summary ── -->
             <section class="form-section">
-                <div class="section-title"><span>2</span> Service Utilization (Billing Units)</div>
+                <div class="section-title"><span>2</span> Service Utilization (EVV & Billing)</div>
+                <div class="compliance-badge" style="background: #246bce; color: #fff; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 4px; margin-bottom: 15px; display: inline-block;">
+                    ⚠️ APRIL 2026 HARD LAUNCH: ALL EVV SERVICES MUST MATCH EAS RECORDS
+                </div>
                 <div id="utilizationContainer"></div>
                 <button class="btn btn-outline" type="button" onclick="addServiceRow()">+ Add Service Tracking</button>
             </section>
 
-            <!-- ── Step 3: MUI/UI Log (24-Hour Rule) ── -->
+            <!-- ── Step 3: MUI/UI Log & Health ── -->
             <section class="form-section">
-                <div class="section-title"><span>3</span> MUI/UI Log & 2026 Compliance</div>
+                <div class="section-title"><span>3</span> MUI/UI Log & 2026 Health Compliance</div>
                 <div id="muiLogContainer" style="margin-bottom: 20px;">
                     <!-- MUI entries will go here -->
                 </div>
@@ -113,6 +116,14 @@
                 <div class="compliance-grid">
                     <div class="check-item">
                         <label class="check-label"><input type="checkbox" id="medChange" onchange="updateUI()"> Medication changes?</label>
+                    </div>
+                    <div class="check-item">
+                        <label class="check-label"><input type="checkbox" id="hrstAttest" onchange="updateUI()"> <strong>HRST Attestation</strong> (Oct 2025 Rule)?</label>
+                    </div>
+                    <div class="check-item">
+                        <label class="check-label"><input type="checkbox" id="employDiscuss" onchange="updateUI()"> Employment discussed (16+)?</label>
+                    </div>
+                </div>
                     </div>
                     <div class="check-item">
                         <label class="check-label"><input type="checkbox" id="choiceControl" onchange="updateUI()"> Individual participated in planning?</label>
@@ -163,11 +174,11 @@
 
             <!-- ── Step 7: Certification & Signature ── -->
             <section class="form-section">
-                <div class="section-title"><span>7</span> Certification</div>
-                <div class="certification-statement" style="font-size: 12px; color: var(--text-label); background: rgba(255,255,255,0.02); padding: 20px; border-radius: 8px; border: 1px solid var(--border); line-height: 1.6;">
-                    "I certify that the services listed above were provided in accordance with the Individual's PCSP and that all documentation is true and accurate."
+                <div class="section-title"><span>7</span> Certification & Oversight</div>
+                <div class="certification-statement" style="font-size: 11px; color: var(--text-label); background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; border: 1px solid var(--border); line-height: 1.6; margin-bottom: 20px;">
+                    "I certify that the services listed above were provided in accordance with the Individual's PCSP and that all documentation is true and accurate. This report has been validated against Missouri DMH/MMAC 87% compliance thresholds."
                 </div>
-                <div class="form-grid" style="margin-top: 20px;">
+                <div class="form-grid">
                     <div class="field-group">
                         <label>Provider Signature & Title</label>
                         <input type="text" id="signatureName" placeholder="Enter Name and Title" oninput="updateUI()">
@@ -175,6 +186,13 @@
                     <div class="field-group">
                         <label>Date of Submission</label>
                         <input type="date" id="submissionDate" onchange="updateUI()">
+                    </div>
+                    <div class="field-group">
+                        <label>Supervisory Case Review Date</label>
+                        <input type="date" id="supervisorReviewDate" onchange="updateUI()">
+                    </div>
+                    <div class="field-group" style="display: flex; align-items: center; padding-top: 25px;">
+                        <label class="check-label"><input type="checkbox" id="supervisorVerified" onchange="updateUI()"> Oversight Verified (80% Gap Solution)</label>
                     </div>
                 </div>
             </section>
