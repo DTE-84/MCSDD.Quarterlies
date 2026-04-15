@@ -61,6 +61,30 @@ const MUI_CATEGORIES = [
     "Medication Error", "Missing Person", "Physical/Verbal Abuse", "Unexplained Injury"
 ];
 
+// ── Access Control ──
+function checkPass() {
+    const input = document.getElementById('passInput');
+    const msg = document.getElementById('errorMsg');
+    // Simple logic-gate for prototype (Mirroring PCSP Pro)
+    if (input.value === 'MCSDD22') {
+        document.getElementById('lockScreen').classList.add('fade-out');
+        setTimeout(() => {
+            document.getElementById('lockScreen').style.display = 'none';
+            document.getElementById('welcomeScreen').style.display = 'flex';
+        }, 700);
+    } else {
+        msg.textContent = "Invalid credentials. Incident logged.";
+        input.value = '';
+        input.focus();
+    }
+}
+
+function launchApp() {
+    document.getElementById('welcomeScreen').style.display = 'none';
+    document.getElementById('app-wrapper').style.display = 'block';
+    init();
+}
+
 function init() {
     console.log("Quarterly Pro Engine v1.6: Online");
     initTheme();
