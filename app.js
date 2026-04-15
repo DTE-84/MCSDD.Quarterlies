@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────
 //  Quarterly Pro | MCSDD Compliance Engine
 //  app.js v1.6 — High-Fidelity Satellite Node
-//  © 2024-2026 DTE Solutions. All Rights Reserved.
+//  © 2026-2027 DTE Solutions. All Rights Reserved.
 // ─────────────────────────────────────────────
 
 // ── Theme Management ──
