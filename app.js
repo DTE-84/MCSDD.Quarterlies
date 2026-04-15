@@ -4,6 +4,29 @@
 //  © 2024-2026 DTE Solutions. All Rights Reserved.
 // ─────────────────────────────────────────────
 
+// ── Theme Management ──
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('quarterly_theme', newTheme);
+    updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (icon) {
+        icon.textContent = theme === 'light' ? '☀️' : '🌙';
+    }
+}
+
+function initTheme() {
+    const savedTheme = localStorage.getItem('quarterly_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+}
+
 let linkedPcsp = null;
 let activeGoals = [];
 let trackedServices = [];
@@ -40,6 +63,7 @@ const MUI_CATEGORIES = [
 
 function init() {
     console.log("Quarterly Pro Engine v1.6: Online");
+    initTheme();
     populateStaffSelection();
     updateUI();
 }

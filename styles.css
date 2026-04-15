@@ -11,6 +11,18 @@
     --radius: 12px;
 }
 
+[data-theme="light"] {
+    --bg-dark: #f4f7f9;
+    --card-dark: #ffffff;
+    --primary: #c5a059;
+    --primary-dim: rgba(197, 160, 89, 0.1);
+    --text-base: #2c3e50;
+    --text-label: #555555;
+    --border: #003366; /* Marion Blue for Light Mode borders */
+    --success: #28a745;
+    --danger: #dc3545;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -23,6 +35,7 @@ body {
     font-family: 'DM Sans', sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
 }
 
 .font-serif {
@@ -44,11 +57,12 @@ body {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border);
-    background: rgba(18, 16, 13, 0.8);
+    background: var(--card-dark);
     backdrop-filter: blur(10px);
     position: sticky;
     top: 0;
     z-index: 100;
+    transition: all 0.3s;
 }
 
 .logo-area {
@@ -90,9 +104,9 @@ body {
 }
 
 .hipaa-badge {
-    background: rgba(45, 237, 156, 0.05);
-    border: 1px solid var(--success);
-    color: var(--success);
+    background: var(--primary-dim);
+    border: 1px solid var(--border);
+    color: var(--primary);
     padding: 6px 12px;
     border-radius: 6px;
     font-size: 10px;

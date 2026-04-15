@@ -10,15 +10,15 @@
 <body onload="init()">
     <div class="app-container">
         <!-- ── Header ── -->
-        <header class="main-header" style="border-bottom: 3px solid #0056b3;">
+        <header class="main-header">
             <div class="logo-area">
-                <div class="logo-circle" style="background: rgba(0, 86, 179, 0.1); border-color: #0056b3;">
+                <div class="logo-circle">
                     <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20 5L35 30H5L20 5Z" fill="#0056b3" />
+                        <path d="M20 5L35 30H5L20 5Z" fill="currentColor" />
                     </svg>
                 </div>
                 <div>
-                    <div class="app-title" style="color: #0056b3;">Quarterly Pro</div>
+                    <div class="app-title">Quarterly Pro</div>
                     <div class="app-subtitle">Official MCSDD Compliance Protocol</div>
                 </div>
             </div>
@@ -27,11 +27,14 @@
                 12 Northport Plaza, Hannibal, MO 63401 | (573) 248-1077
             </div>
             <div class="header-controls">
-                <div class="hipaa-badge" style="border-color: #0056b3; color: #0056b3;">
-                    <span class="pulse-dot" style="background: #0056b3; box-shadow: 0 0 8px #0056b3;"></span>
+                <button class="btn btn-outline" onclick="toggleTheme()" id="themeToggle" style="padding: 10px; border-radius: 50%; min-width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                    <span id="themeIcon">🌓</span>
+                </button>
+                <div class="hipaa-badge">
+                    <span class="pulse-dot"></span>
                     STATION SECURE
                 </div>
-                <button class="btn btn-outline" onclick="triggerPcspImport()" style="border-color: #0056b3; color: #0056b3;">
+                <button class="btn btn-outline" onclick="triggerPcspImport()">
                     📂 Link PCSP Data
                 </button>
                 <input type="file" id="pcspImport" style="display:none" accept=".pcsp" onchange="handlePcspImport(event)">
@@ -39,7 +42,7 @@
         </header>
 
         <main class="main-workspace">
-            <div class="individual-banner" id="individualBanner" style="border-left: 5px solid #0056b3;">
+            <div class="individual-banner" id="individualBanner">
                 <div style="display: flex; flex-direction: column; gap: 5px;">
                     <span class="ind-name" id="display-name" style="border:none; padding:0;">No PCSP Linked</span>
                     <div style="display: flex; gap: 15px;">
