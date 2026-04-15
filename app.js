@@ -321,44 +321,52 @@ function renderOutcomes() {
     `).join("");
 }
 
-// ── QUALITY AUDIT ENGINE ──
+// ── QUALITY AUDIT ENGINE (MMAC/DMH Calibration) ──
 function runQualityAudit() {
     const flags = [];
     const getVal = (id) => document.getElementById(id)?.value || "";
     
+    // 1. SERVICE UTILIZATION & MMAC COMPLIANCE
     trackedServices.forEach((s) => {
         const variance = calculateVariance(s.auth, s.used);
-        if (Math.abs(variance) >= 10 && !s.varianceNote.trim()) {
-            const serviceObj = SERVICES_DB.find(obj => obj.code === s.serviceCode);
-            flags.push(`<strong>Variance Alert:</strong> ${serviceObj ? serviceObj.name : "Service"} deviation is ${variance.toFixed(1)}%. Justification required.`);
+        const serviceObj = SERVICES_DB.find(obj => obj.code === s.serviceCode);
+        
+        if (s.used > s.auth) {
+            flags.push(`<strong>MMAC Critical:</strong> ${serviceObj ? serviceObj.name : "Service"} units (${s.used}) exceed authorized limits (${s.auth}). This is a high-risk trigger for claim denial.`);
+        } else if (Math.abs(variance) >= 10 && !s.varianceNote.trim()) {
+            flags.push(`<strong>DMH Monitoring:</strong> ${serviceObj ? serviceObj.name : "Service"} deviation is ${variance.toFixed(1)}%. Missouri requires explicit justification for ±10% variance.`);
         }
     });
 
+    // 2. PERSON-CENTERED TONE & LINGUISTIC FRICTION
     const redFlagWords = ["refused", "non-compliant", "uncooperative", "failed"];
     const allText = (getVal("successStory") + " " + getVal("healthSafetyNotes")).toLowerCase();
     if (redFlagWords.some(word => allText.includes(word))) {
-        flags.push(`<strong>Tone Check:</strong> Compliance-based language detected ("Refused"). Consider using <em>"Declined"</em> or <em>"Expressed a preference for..."</em>`);
+        flags.push(`<strong>Linguistic Friction:</strong> Deficit-based language detected ("Refused"). Consider using <em>"Declined"</em> or <em>"Expressed a preference for..."</em> to maintain 87%+ compliance scores.`);
     }
 
+    // 3. MUI TIMELINESS (24-Hour Watchdog)
     muiLog.forEach(m => {
         const late = checkMUILateFiling(m.discoveryDate);
         if (late.isLate && !m.lateJustification.trim()) {
-            flags.push(`<strong>MUI Critical:</strong> Incident [${m.category}] was discovered >24 hours ago. Late filing justification is mandatory.`);
+            flags.push(`<strong>MUI/UI Critical:</strong> Incident discovered >24 hours ago. MMAC/DMH mandates immediate notification with late filing justification.`);
         }
     });
 
+    // 4. RUBBER STAMPING & DATA INTEGRITY
     const currentNarrative = getVal("successStory") + getVal("healthSafetyNotes");
     if (prevQuarterNarrative && currentNarrative) {
         const score = getNarrativeSimilarity(prevQuarterNarrative, currentNarrative);
         if (score > 0.85) {
-            flags.push(`<strong>Rubber Stamping Alert:</strong> Narrative is ${(score * 100).toFixed(0)}% identical to previous data.`);
+            flags.push(`<strong>Integrity Alert:</strong> Narrative is ${(score * 100).toFixed(0)}% identical to previous data. Static notes are a primary cause for 11% unallowable error rates.`);
         }
     }
 
+    // 5. EMPLOYMENT FIRST (16+ Compliance)
     if (linkedPcsp && linkedPcsp.clientDOB) {
         const age = calculateAge(linkedPcsp.clientDOB);
         if (age >= 16 && !document.getElementById('employDiscuss').checked) {
-            flags.push(`<strong>Employment First:</strong> Individual is ${age}. Missouri mandates quarterly employment discussions for ages 16+.`);
+            flags.push(`<strong>Employment Mandate:</strong> Individual is ${age}. Quarterly employment discussions are required for 100% of cases 16+ per MO DMH standards.`);
         }
     }
 
