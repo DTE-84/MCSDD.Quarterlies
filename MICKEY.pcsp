@@ -1,0 +1,37 @@
+{
+  "coverLegalName": "MICHAEL 'MICKEY' JONES",
+  "clientDOB": "1992-05-24",
+  "coverDmhID": "88772211",
+  "coordinator": "Suzanne Wear",
+  "_goalsData": [
+    {
+      "domain": "Community Integration",
+      "goal": "Mickey will volunteer at the Hannibal nutrition center twice monthly to foster community connections."
+    },
+    {
+      "domain": "Employment",
+      "goal": "Mickey will maintain his part-time position at the local workshop with 95% attendance."
+    },
+    {
+      "domain": "Health & Safety",
+      "goal": "Mickey will independently manage his morning medication routine using a 7-day pill organizer."
+    }
+  ],
+  "_programServices": [
+    {
+      "service": "Individualized Supported Living (ISL)",
+      "provider": "MCSDD Residential",
+      "funding": "Waiver"
+    },
+    {
+      "service": "Community Networking",
+      "provider": "Hannibal Community Hub",
+      "funding": "Waiver"
+    },
+    {
+      "service": "Transportation (Mileage)",
+      "provider": "Self-Directed",
+      "funding": "Waiver"
+    }
+  ]
+}

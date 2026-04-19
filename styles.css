@@ -1,26 +1,30 @@
 :root {
-    --bg-dark: #003366;
-    --card-dark: #0a1e33;
-    --primary: #c5a059;
-    --primary-dim: rgba(197, 160, 89, 0.15);
+    --bg-dark: #0a0a0c;
+    --card-dark: #121216;
+    --primary: #ffd700;
+    --primary-dim: rgba(255, 215, 0, 0.1);
+    --accent: #00ff9d;
     --text-base: #f4f1eb;
-    --text-label: #a0aec0;
-    --border: rgba(255, 255, 255, 0.1);
-    --success: #28a745;
-    --danger: #dc3545;
+    --text-label: #8a8fa8;
+    --border: rgba(255, 215, 0, 0.15);
+    --success: #00ff9d;
+    --danger: #ff4d4d;
     --radius: 12px;
+    --glass: rgba(255, 255, 255, 0.03);
 }
 
 [data-theme="light"] {
-    --bg-dark: #f4f7f9;
+    --bg-dark: #f8f9fa;
     --card-dark: #ffffff;
-    --primary: #c5a059;
-    --primary-dim: rgba(197, 160, 89, 0.1);
-    --text-base: #2c3e50;
-    --text-label: #555555;
-    --border: #003366; /* Marion Blue for Light Mode borders */
+    --primary: #b8860b;
+    --primary-dim: rgba(184, 134, 11, 0.1);
+    --accent: #008f5d;
+    --text-base: #1a1a1a;
+    --text-label: #5a5a5a;
+    --border: rgba(0, 0, 0, 0.1);
     --success: #28a745;
     --danger: #dc3545;
+    --glass: rgba(0, 0, 0, 0.02);
 }
 
 * {
@@ -50,6 +54,83 @@ body {
     flex-direction: column;
 }
 
+/* ── Lock & Welcome Screens ── */
+#lockScreen {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 20%, #1a2d52 0%, #0a0a0c 65%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+#lockScreen.fade-out {
+    opacity: 0;
+    transform: scale(1.04);
+    pointer-events: none;
+}
+
+.lock-card {
+    background: linear-gradient(160deg, #141e36 0%, #0d1525 100%);
+    border: 1px solid rgba(201, 168, 76, 0.22);
+    border-radius: 12px;
+    padding: 52px 48px 44px;
+    width: 420px;
+    max-width: 92vw;
+    text-align: center;
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(201, 168, 76, 0.08);
+}
+
+.modal-logo { max-width: 140px; margin-bottom: 20px; }
+.lock-card h1 { font-family: "Cormorant Garamond", serif; font-size: 1.55rem; color: #e8c96a; margin-bottom: 4px; }
+.lock-card .subtitle { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: #8a8fa8; margin-bottom: 36px; }
+
+.field-wrap { position: relative; margin-bottom: 16px; }
+.field-wrap input { 
+    width: 100%; 
+    background: rgba(255, 255, 255, 0.04); 
+    border: 1px solid rgba(201, 168, 76, 0.2); 
+    border-radius: 6px; 
+    padding: 14px 18px; 
+    color: #f4f1eb; 
+    outline: none; 
+}
+
+#errorMsg { color: #e07070; font-size: 0.78rem; margin-bottom: 14px; min-height: 18px; }
+.lock-footer { margin-top: 28px; font-size: 0.68rem; color: rgba(138, 143, 168, 0.4); border-top: 1px solid rgba(201, 168, 76, 0.1); padding-top: 20px; }
+
+#welcomeScreen {
+    position: fixed;
+    inset: 0;
+    background: #0a0a0c;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9000;
+    padding: 40px 20px;
+    color: #f4f1eb;
+}
+
+.welcome-card {
+    background: linear-gradient(145deg, #121216 0%, #0d0d10 100%);
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    border-radius: 16px;
+    width: 800px;
+    max-width: 100%;
+    padding: 60px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+    text-align: center;
+}
+
+.welcome-card h2 { font-family: "Cormorant Garamond", serif; font-size: 2.4rem; color: var(--primary); margin-bottom: 8px; }
+.welcome-card .version { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255, 255, 255, 0.3); margin-bottom: 40px; display: block; }
+.guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; text-align: left; margin-bottom: 50px; }
+.guide-item h3 { color: var(--primary); font-size: 0.95rem; text-transform: uppercase; margin-bottom: 12px; }
+.guide-item p { font-size: 0.85rem; line-height: 1.6; color: #8a8fa8; }
+.btn-launch { background: var(--primary); color: #0a0a0c; border: none; padding: 18px 48px; border-radius: 8px; font-weight: 800; text-transform: uppercase; cursor: pointer; box-shadow: 0 0 20px var(--primary-dim); }
+
 /* ── Header ── */
 .main-header {
     padding: 20px 40px;
@@ -62,7 +143,6 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    transition: all 0.3s;
 }
 
 .logo-area {
@@ -86,7 +166,6 @@ body {
     font-family: 'Cormorant Garamond', serif;
     font-size: 24px;
     font-weight: 700;
-    letter-spacing: 1px;
     color: var(--primary);
 }
 
@@ -119,9 +198,9 @@ body {
 .pulse-dot {
     width: 6px;
     height: 6px;
-    background: var(--success);
+    background: var(--accent);
     border-radius: 50%;
-    box-shadow: 0 0 8px var(--success);
+    box-shadow: 0 0 8px var(--accent);
     animation: pulse 2s infinite;
 }
 
@@ -142,13 +221,14 @@ body {
 
 .individual-banner {
     background: var(--card-dark);
-    border: 1px solid var(--primary-dim);
+    border: 1px solid var(--border);
     padding: 25px 30px;
     border-radius: var(--radius);
     margin-bottom: 40px;
     display: flex;
     align-items: center;
     gap: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 .ind-name {
@@ -175,12 +255,6 @@ body {
 /* ── Form Sections ── */
 .form-section {
     margin-bottom: 50px;
-    animation: fadeIn 0.5s ease-out both;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 .section-title {
@@ -198,7 +272,7 @@ body {
 
 .section-title span {
     background: var(--primary);
-    color: var(--bg-dark);
+    color: #000;
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -207,14 +281,6 @@ body {
     justify-content: center;
     font-size: 14px;
     font-weight: 800;
-    font-family: 'DM Sans', sans-serif;
-}
-
-.section-hint {
-    font-size: 12px;
-    color: var(--text-label);
-    margin-bottom: 20px;
-    font-style: italic;
 }
 
 .form-grid {
@@ -242,43 +308,19 @@ label {
 }
 
 input, select, textarea {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--glass);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 12px 16px;
     color: var(--text-base);
     font-family: inherit;
     font-size: 14px;
-    transition: all 0.2s;
 }
 
 input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--primary);
     background: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 0 0 3px var(--primary-dim);
-}
-
-textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.radio-group {
-    display: flex;
-    gap: 30px;
-    padding: 10px 0;
-}
-
-.radio-group label {
-    text-transform: none;
-    letter-spacing: 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    font-weight: 400;
-    color: var(--text-base);
 }
 
 /* ── Buttons ── */
@@ -288,9 +330,7 @@ textarea {
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
     cursor: pointer;
-    transition: all 0.2s;
     border: none;
     display: inline-flex;
     align-items: center;
@@ -303,67 +343,37 @@ textarea {
     color: var(--primary);
 }
 
-.btn-outline:hover {
-    background: var(--primary-dim);
-}
-
 .btn-primary {
     background: var(--primary);
-    color: var(--bg-dark);
-}
-
-.btn-primary:hover {
-    filter: brightness(1.1);
-}
-
-.btn-success {
-    background: var(--success);
     color: #000;
 }
 
-.btn-danger {
-    background: var(--danger);
-    color: white;
+.btn-success {
+    background: var(--accent);
+    color: #000;
 }
 
-/* ── Compliance Grid ── */
+/* ── Compliance ── */
 .compliance-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--glass);
     padding: 20px;
     border-radius: 8px;
     border: 1px solid var(--border);
 }
 
-.check-item {
-    display: flex;
-    align-items: center;
-}
-
 .check-label {
     font-size: 13px;
-    font-weight: 400;
-    color: var(--text-base);
-    text-transform: none;
-    letter-spacing: 0;
     display: flex;
     align-items: center;
     gap: 12px;
     cursor: pointer;
 }
 
-.check-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    accent-color: var(--primary);
-}
-
-/* ── Outcome Cards ── */
 .outcome-card {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--glass);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 25px;
@@ -371,120 +381,31 @@ textarea {
     border-left: 4px solid var(--primary);
 }
 
-.outcome-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.outcome-domain {
-    font-size: 10px;
-    font-weight: 800;
-    color: var(--primary);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-/* ── Output ── */
-.output-section {
-    margin-top: 60px;
-    padding-top: 40px;
-    border-top: 2px dashed var(--border);
-}
-
+/* ── Narrative ── */
 .narrative-box {
-    background: #0a0a0a;
+    background: #000;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 30px;
-    font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     white-space: pre-wrap;
-    color: #a0a0a0;
+    color: var(--text-base);
     margin-bottom: 25px;
     min-height: 200px;
 }
 
-.btn-bar {
-    display: flex;
-    gap: 15px;
-    justify-content: flex-end;
+/* ── Mobile ── */
+@media (max-width: 768px) {
+    .main-workspace { padding: 20px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .individual-banner { flex-direction: column; text-align: center; }
+    .ind-name { border: none; padding: 0; }
 }
 
-/* ── Footer ── */
-.app-footer {
-    padding: 40px;
-    text-align: center;
-    border-top: 1px solid var(--border);
-    font-size: 10px;
-    color: var(--text-label);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.app-footer p {
-    margin-bottom: 5px;
-}
-
-/* ── Service Grid ── */
-.service-row input, .service-row select {
-    padding: 8px;
-    font-size: 13px;
-}
-
-/* ── Print Styles (Government Standard) ── */
+/* ── Print ── */
 @media print {
-    header, .header-controls, .section-hint, .btn-bar, .app-footer, .remove-rep-btn, button {
-        display: none !important;
-    }
-    
-    body {
-        background: white !important;
-        color: black !important;
-        font-family: "Times New Roman", Times, serif !important;
-        padding: 0;
-    }
-
-    .main-workspace {
-        padding: 0 !important;
-        max-width: 100% !important;
-    }
-
-    .individual-banner {
-        background: white !important;
-        border: 2px solid black !important;
-        color: black !important;
-        border-radius: 0 !important;
-    }
-
-    .ind-name {
-        color: black !important;
-    }
-
-    .section-title {
-        color: black !important;
-        border-bottom: 2px solid black !important;
-        text-transform: uppercase;
-        font-size: 14pt !important;
-    }
-
-    .section-title span {
-        display: none;
-    }
-
-    .narrative-box {
-        background: white !important;
-        border: none !important;
-        padding: 0 !important;
-        color: black !important;
-        font-size: 11pt !important;
-        line-height: 1.5;
-    }
-
-    .certification-statement {
-        background: white !important;
-        border: 1px solid black !important;
-        color: black !important;
-        font-style: italic;
-    }
+    header, .header-controls, .btn-bar, .app-footer, button { display: none !important; }
+    body { background: white; color: black; }
+    .main-workspace { max-width: 100%; padding: 0; }
+    .narrative-box { border: none; padding: 0; }
 }
