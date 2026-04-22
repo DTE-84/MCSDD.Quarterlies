@@ -85,6 +85,15 @@ function launchApp() {
     init();
 }
 
+// ── REGULATORY MODAL ──
+function openRegulatoryModal() {
+    document.getElementById('regModal').style.display = 'flex';
+}
+
+function closeRegulatoryModal() {
+    document.getElementById('regModal').style.display = 'none';
+}
+
 function init() {
     console.log("Quarterly Pro Engine v1.6: Online");
     initTheme();
