@@ -1,222 +1,1597 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quarterly Pro | DD Case Management</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MCSDD Quarterly Program Review | DMH TCM Compliant</title>
+<style>
+  :root {
+    --bg: #f0f2f5;
+    --surface: #ffffff;
+    --surface2: #f7f8fa;
+    --border: #d8dde6;
+    --border-light: #eaecf0;
+    --primary: #1e3a6e;
+    --primary-light: #e8eef8;
+    --primary-mid: #2a4d8f;
+    --accent: #00796b;
+    --accent-light: #e0f2f1;
+    --accent-mid: #00695c;
+    --warn: #b45309;
+    --warn-bg: #fffbeb;
+    --warn-border: #fbbf24;
+    --danger: #9b1c1c;
+    --danger-bg: #fef2f2;
+    --text: #1a202c;
+    --text2: #4a5568;
+    --text3: #718096;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --shadow: 0 1px 4px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ── Header ── */
+  .app-header {
+    background: var(--primary);
+    color: #fff;
+    padding: 13px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    border-bottom: 2px solid #0f2554;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-logo {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; color: #fff; letter-spacing: -0.5px;
+  }
+  .header-title { font-size: 15px; font-weight: 700; }
+  .header-sub { font-size: 10.5px; opacity: 0.7; margin-top: 1px; letter-spacing: 0.4px; }
+  .header-controls { display: flex; align-items: center; gap: 8px; }
+  .header-badge {
+    font-size: 9.5px; font-weight: 700; padding: 4px 9px;
+    background: rgba(255,255,255,0.12); border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.22); letter-spacing: 0.5px;
+    text-transform: uppercase; color: rgba(255,255,255,0.9);
+  }
+
+  /* ── HIPAA notice ── */
+  .hipaa-bar {
+    background: var(--warn-bg);
+    border-bottom: 1px solid var(--warn-border);
+    padding: 7px 24px;
+    font-size: 11px;
+    color: var(--warn);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hipaa-bar svg { flex-shrink: 0; }
+
+  /* ── Review Info Grid ── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    padding: 14px 24px;
+    background: var(--primary-light);
+    border-bottom: 1px solid #c6d5ec;
+  }
+  .info-field label {
+    display: block; font-size: 10px; font-weight: 700; color: var(--primary);
+    text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px;
+  }
+  .info-field input, .info-field select {
+    width: 100%; border: 1px solid #c6d5ec;
+    border-radius: var(--radius); padding: 6px 9px;
+    font-size: 13px; background: #fff; color: var(--text);
+    transition: border-color 0.15s;
+  }
+  .info-field input:focus, .info-field select:focus {
+    outline: none; border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(30,58,110,0.12);
+  }
+
+  /* ── Main layout ── */
+  .main { max-width: 920px; margin: 0 auto; padding: 18px 16px 40px; }
+
+  /* ── Section cards ── */
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border-light);
+    background: var(--surface2);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .section-header:hover { background: var(--primary-light); }
+  .section-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--primary); color: #fff;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title { font-size: 13px; font-weight: 600; color: var(--primary); flex: 1; }
+  .section-toggle { font-size: 12px; color: var(--text3); transition: transform 0.2s; }
+  .section-body { padding: 18px; }
+  .section-body.collapsed { display: none; }
+
+  /* ── Form elements ── */
+  label.field-label {
+    display: block; font-size: 11px; font-weight: 600;
+    color: var(--text2); margin-bottom: 4px; text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  input[type="text"], input[type="date"], select, textarea {
+    width: 100%; border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 8px 10px;
+    font-size: 13px; font-family: inherit; background: #fff; color: var(--text);
+    transition: border-color 0.15s;
+  }
+  input[type="text"]:focus, textarea:focus, select:focus {
+    outline: none; border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(30,58,110,0.1);
+  }
+  textarea { resize: vertical; min-height: 72px; }
+  .field-row { margin-bottom: 14px; }
+  .field-row:last-child { margin-bottom: 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* ── Checklist ── */
+  .checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .check-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); }
+  .check-item input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--primary); flex-shrink: 0; }
+
+  /* ── Radio groups ── */
+  .radio-group { display: flex; gap: 16px; flex-wrap: wrap; }
+  .radio-group label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; color: var(--text); }
+  .radio-group input[type="radio"] { accent-color: var(--primary); }
+
+  /* ── Divider label ── */
+  .divider-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.6px; color: var(--text3); margin-bottom: 10px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--border-light);
+  }
+
+  /* ── Service Repeater ── */
+  .repeater-item {
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 10px;
+    background: var(--surface2);
+  }
+  .repeater-item-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+  }
+  .item-badge {
+    font-size: 10px; font-weight: 700; padding: 2px 8px;
+    border-radius: 20px; text-transform: uppercase; letter-spacing: 0.4px;
+    background: var(--primary-light); color: var(--primary); flex-shrink: 0;
+  }
+  .remove-btn {
+    margin-left: auto; font-size: 11px; color: var(--danger);
+    border: 1px solid transparent; background: none; cursor: pointer;
+    padding: 3px 7px; border-radius: 5px; font-weight: 600;
+    transition: all 0.15s;
+  }
+  .remove-btn:hover { background: var(--danger-bg); border-color: #fca5a5; }
+  .add-btn {
+    width: 100%; padding: 9px; border: 1px dashed var(--border);
+    border-radius: var(--radius); background: none; color: var(--text3);
+    font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s;
+  }
+  .add-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+
+  /* ── SPLIT SCREEN OUTCOMES (Section 3) ── */
+  .outcome-split {
+    display: flex;
+    gap: 14px;
+    min-height: 460px;
+  }
+  .outcome-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 540px;
+    overflow-y: auto;
+  }
+  .outcome-sidebar-title {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.6px; color: var(--text3); padding: 4px 4px 8px;
+    border-bottom: 1px solid var(--border-light); margin-bottom: 4px;
+  }
+  .outcome-tab {
+    width: 100%; text-align: left;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    cursor: pointer;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .outcome-tab:hover { background: var(--primary-light); }
+  .outcome-tab.active {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    box-shadow: 0 1px 4px rgba(30,58,110,0.1);
+  }
+  .tab-header-row {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 3px;
+  }
+  .tab-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--primary);
+  }
+  .tab-flag-badge {
+    font-size: 9px; font-weight: 700;
+    background: var(--warn-bg); border: 1px solid var(--warn-border);
+    color: var(--warn); padding: 1px 5px; border-radius: 10px;
+    text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  .tab-desc {
+    font-size: 12px; color: var(--text3); line-height: 1.35;
+    display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  .outcome-editor {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 20px;
+    max-height: 540px;
+    overflow-y: auto;
+  }
+  .editor-eyebrow {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--accent); margin-bottom: 4px;
+  }
+  .editor-title {
+    font-size: 17px; font-weight: 600; color: var(--primary);
+    margin-bottom: 14px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-light); line-height: 1.35;
+  }
+  .ref-card {
+    background: var(--surface2);
+    border: 1px solid var(--border-light);
+    border-left: 3px solid var(--primary);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    margin-bottom: 10px;
+  }
+  .ref-card-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--text3); margin-bottom: 4px;
+  }
+  .ref-card-text { font-size: 13px; color: var(--text); line-height: 1.45; }
+
+  /* MO Outcomes Collapsible Guide */
+  .mo-guide-card {
+    background: var(--accent-light);
+    border: 1px solid #b2dfdb;
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-top: 10px;
+    margin-bottom: 14px;
+  }
+  .mo-guide-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 9px 14px; cursor: pointer; user-select: none;
+    font-size: 11px; font-weight: 700; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    transition: background 0.15s;
+  }
+  .mo-guide-header:hover { background: rgba(0,121,107,0.08); }
+  .mo-guide-body { padding: 14px; border-top: 1px solid #b2dfdb; }
+  .mo-guide-body p { font-size: 12px; color: var(--text2); margin-bottom: 10px; line-height: 1.5; }
+  .mo-guide-body ul { padding-left: 18px; }
+  .mo-guide-body li { font-size: 12px; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
+
+  /* Revision Hook in editor */
+  .revision-hook {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px; border-radius: var(--radius);
+    border: 1px solid var(--border-light);
+    background: var(--surface2);
+    margin-top: 14px;
+    transition: all 0.2s;
+  }
+  .revision-hook.flagged {
+    background: var(--warn-bg); border-color: var(--warn-border);
+  }
+  .revision-hook input[type="checkbox"] {
+    width: 16px; height: 16px; accent-color: var(--warn); flex-shrink: 0; margin-top: 2px;
+  }
+  .revision-hook strong { display: block; font-size: 13px; color: var(--text); margin-bottom: 2px; }
+  .revision-hook.flagged strong { color: var(--warn); }
+  .revision-hook p { font-size: 12px; color: var(--text3); }
+
+  /* Progress bar under Section 3 header */
+  .progress-bar-wrap {
+    background: var(--surface2); border-bottom: 1px solid var(--border-light);
+    padding: 10px 18px;
+    display: none;
+  }
+  .progress-bar-row {
+    display: flex; justify-content: space-between;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--text3); margin-bottom: 5px;
+  }
+  .progress-track {
+    width: 100%; height: 5px; background: var(--border-light);
+    border-radius: 3px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--primary) 100%);
+    border-radius: 3px; width: 0%; transition: width 0.4s ease;
+  }
+
+  /* ── AI Section ── */
+  .ai-section {
+    background: linear-gradient(135deg, #0d1b3e 0%, #1e3a6e 100%);
+    border-radius: var(--radius-lg);
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    color: #fff;
+    box-shadow: var(--shadow-md);
+  }
+  .ai-section h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .ai-section p { font-size: 12px; opacity: 0.7; margin-bottom: 14px; }
+  .ai-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .ai-btn {
+    padding: 8px 16px; border-radius: var(--radius);
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: #fff; font-size: 12px; font-weight: 500; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .ai-btn:hover { background: rgba(255,255,255,0.18); }
+  .ai-btn.primary { background: var(--accent); border-color: var(--accent); }
+  .ai-btn.primary:hover { background: var(--accent-mid); }
+  .output-box {
+    background: #fff; color: var(--text); border-radius: var(--radius);
+    padding: 14px 16px; font-size: 13px; line-height: 1.7;
+    white-space: pre-wrap; display: none; position: relative;
+  }
+  .output-box.visible { display: block; }
+  .copy-btn {
+    position: absolute; top: 10px; right: 10px;
+    font-size: 11px; padding: 4px 10px; border-radius: 5px;
+    border: 1px solid var(--border); background: var(--surface2);
+    cursor: pointer; color: var(--text2);
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { background: var(--primary-light); color: var(--primary); }
+
+  /* ── Warning Banner ── */
+  .warning-banner {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    padding: 11px 16px;
+    font-size: 13px; color: var(--warn);
+    border-radius: var(--radius);
+    margin-bottom: 14px;
+    display: none; align-items: center; gap: 8px;
+    font-weight: 500; box-shadow: 0 1px 3px rgba(180,83,9,0.1);
+  }
+  .warning-banner svg { flex-shrink: 0; }
+
+  /* ── Action Items ── */
+  .action-item { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .action-item input[type="text"] { flex: 1; }
+
+  /* ── Password Modal ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+  }
+  .modal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--primary);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    width: 400px; max-width: 90vw;
+    box-shadow: var(--shadow-md);
+    animation: scaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .modal-card h3 { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+  .modal-card p { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 14px; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+
+  /* ── Buttons ── */
+  .btn {
+    padding: 8px 18px; border-radius: var(--radius);
+    border: 1px solid var(--border); background: #fff;
+    color: var(--text); font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { background: var(--surface2); }
+  .btn.primary-btn {
+    background: var(--primary); color: #fff; border-color: var(--primary);
+  }
+  .btn.primary-btn:hover { background: var(--primary-mid); }
+  .btn.accent-btn {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+  }
+  .btn.accent-btn:hover { background: var(--accent-mid); }
+  .btn.header-btn {
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+    color: #fff; font-size: 12px; padding: 6px 12px;
+  }
+  .btn.header-btn:hover { background: rgba(255,255,255,0.25); }
+  .btn.danger-btn {
+    background: var(--danger); color: #fff; border-color: var(--danger);
+    font-size: 12px; padding: 6px 12px;
+  }
+  .btn.danger-btn:hover { background: #7f1d1d; }
+
+  /* ── Footer ── */
+  .footer-bar {
+    background: var(--surface); border-top: 1px solid var(--border-light);
+    padding: 12px 24px; display: flex; gap: 10px;
+    justify-content: flex-end; position: sticky; bottom: 0; z-index: 100;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+  }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  /* ── Mobile ── */
+  @media (max-width: 700px) {
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    .checklist { grid-template-columns: 1fr; }
+    .outcome-split { flex-direction: column; }
+    .outcome-sidebar { width: 100%; max-height: 200px; }
+    .footer-bar { flex-direction: column; }
+    .header-controls .header-badge { display: none; }
+  }
+
+  /* ── Print ── */
+  @media print {
+    .app-header, .hipaa-bar, .footer-bar, .ai-controls,
+    .add-btn, .remove-btn, .section-toggle, .copy-btn,
+    .progress-bar-wrap, #purgeSessionBtn { display: none !important; }
+    body { background: #fff; }
+    .main { max-width: 100%; padding: 0; }
+    .section-body.collapsed { display: block !important; }
+    .section-card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+    .outcome-sidebar { display: none !important; }
+    .outcome-editor { max-height: none; overflow: visible; border: none; }
+    .output-box.visible { display: block; }
+  }
+</style>
 </head>
-<body onload="init()">
-    <div class="app-container">
-        <!-- ── Header ── -->
-        <header class="main-header" style="border-bottom: 3px solid #c9a84c;">
-            <div class="logo-area">
-                <div class="logo-circle" style="background: rgba(201, 168, 76, 0.1); border-color: #c9a84c;">
-                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20 5L35 30H5L20 5Z" fill="#c9a84c" />
-                    </svg>
-                </div>
-                <div>
-                    <div class="app-title" style="color: #c9a84c;">Quarterly Pro</div>
-                    <div class="app-subtitle">DD Case Management & Compliance Engine</div>
-                </div>
-            </div>
-            <div class="header-controls" style="display: flex; gap: 10px;">
-                <button class="btn btn-outline" onclick="triggerPcspImport()" style="border-color: #c9a84c; color: #c9a84c;">
-                    📂 Fetch Active PCSP Snapshot
-                </button>
-                <button class="btn" id="purgeSessionBtn" onclick="triggerSecurityTimeout()" style="display: none; background: rgba(255, 77, 77, 0.1); border: 1px solid var(--danger); color: var(--danger); font-weight: 700;">
-                    🔒 Close & Purge File
-                </button>
-                <input type="file" id="pcspImport" style="display:none" accept=".pcsp,.qtr" onchange="handlePcspImport(event)">
-            </div>
-        </header>
+<body>
 
-        <main class="main-workspace">
-            <!-- ── Dynamic Revision Warning Banner ── -->
-            <div id="revisionWarningBanner" class="warning-banner" style="display: none;">
-                ⚠️ Submission will automatically flag this Individual's PCSP for a mandatory revision workflow.
-            </div>
-
-            <!-- ── Module A: Administrative & Demographics ── -->
-            <section class="form-section">
-                <div class="section-title"><span>A</span> Administrative & Demographics (Auto-Populated)</div>
-                <div class="individual-banner" id="individualBanner" style="border-left: 5px solid #c9a84c;">
-                    <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <span class="ind-name" id="display-name" style="border:none; padding:0;">No PCSP Linked</span>
-                        <div style="display: flex; gap: 15px;">
-                            <span class="ind-meta">Medicaid/DODD: <strong id="display-dmh">—</strong></span>
-                            <span class="ind-meta">DOB: <strong id="display-dob">—</strong></span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-grid">
-                    <div class="field-group">
-                        <label>Review Quarter</label>
-                        <select id="reviewQuarter" onchange="updateUI()">
-                            <option value="2026-Q1">2026-Q1: Jan 1 – Mar 31</option>
-                            <option value="2026-Q2">2026-Q2: Apr 1 – Jun 30</option>
-                            <option value="2026-Q3">2026-Q3: Jul 1 – Sep 30</option>
-                            <option value="2026-Q4">2026-Q4: Oct 1 – Dec 31</option>
-                        </select>
-                    </div>
-                    <div class="field-group">
-                        <label>Case Manager (SSA)</label>
-                        <input type="text" id="caseManager" placeholder="Enter Case Manager Name" oninput="updateUI()">
-                    </div>
-                    <div class="field-group full">
-                        <label>Current Living Arrangement</label>
-                        <select id="livingArrangement" onchange="updateUI()">
-                            <option value="Independent">Independent</option>
-                            <option value="ICF">ICF</option>
-                            <option value="Waiver Home">Waiver Home</option>
-                            <option value="Family">Family</option>
-                        </select>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ── Module B: PCSP Outcome & Goal Tracking ── -->
-            <section class="form-section" id="outcomes-section">
-                <div class="section-title"><span>B</span> PCSP Outcome & Goal Tracking</div>
-                <p class="section-hint">Review active goals and document current progress.</p>
-                
-                <!-- Sticky Progress Tracker -->
-                <div class="progress-bar-container" id="progressBarContainer" style="display: none;">
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-label); margin-bottom: 5px;">
-                        <span>Progress Metrics</span>
-                        <span id="progressBarPercent">0% Complete</span>
-                    </div>
-                    <div class="progress-track">
-                        <div class="progress-fill" id="progressBarFill" style="width: 0%;"></div>
-                    </div>
-                </div>
-
-                <!-- Split-Screen Assessment Container -->
-                <div class="outcome-split-screen" id="outcomesSplitScreen">
-                    <!-- Left Sidebar Goal Navigation Tabs -->
-                    <div class="outcome-sidebar" id="outcomeSidebar">
-                        <!-- Navigation tabs loaded dynamically -->
-                    </div>
-                    
-                    <!-- Right Evaluation Editor -->
-                    <div class="outcome-editor" id="outcomeEditor">
-                        <div style="text-align: center; color: var(--text-label); padding: 40px;">
-                            Fetch a PCSP to populate active outcomes.
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ── Module C: Health, Welfare, and Safety Review ── -->
-            <section class="form-section">
-                <div class="section-title"><span>C</span> Health, Welfare, & Safety Review</div>
-                <div class="form-grid">
-                    <div class="field-group full">
-                        <label>MUI/UI Review (Major Unusual Incidents)</label>
-                        <div class="check-item" style="margin-bottom: 10px;">
-                            <label class="check-label"><input type="checkbox" id="muiReviewed" onchange="updateUI()"> Incidents reviewed for this quarter?</label>
-                        </div>
-                        <textarea id="muiNarrative" placeholder="Describe incidents and note if PCSP needs modification to prevent future incidents..." oninput="updateUI()"></textarea>
-                    </div>
-                    
-                    <div class="field-group full">
-                        <label>Behavioral Support Check</label>
-                        <div class="check-item" style="margin-bottom: 10px;">
-                            <label class="check-label"><input type="checkbox" id="behavioralReviewed" onchange="updateUI()"> Restrictive measures/unapproved supports reviewed?</label>
-                        </div>
-                        <textarea id="behavioralNarrative" placeholder="Track if restrictions are being faded..." oninput="updateUI()"></textarea>
-                    </div>
-                    
-                    <div class="field-group full">
-                        <label>Medication / Health Changes</label>
-                        <textarea id="healthChangesNarrative" placeholder="Document any new medical diagnoses or medication changes..." oninput="updateUI()"></textarea>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ── Module D: Provider & Service Delivery Verification ── -->
-            <section class="form-section">
-                <div class="section-title"><span>D</span> Provider & Service Delivery Verification</div>
-                <div class="form-grid">
-                    <div class="field-group full">
-                        <label>Provider Compliance</label>
-                        <div class="check-item" style="margin-bottom: 10px;">
-                            <label class="check-label"><input type="checkbox" id="providerCompliance" onchange="updateUI()"> Authorized waiver providers are delivering services according to the PCSP?</label>
-                        </div>
-                    </div>
-                    
-                    <div class="field-group">
-                        <label>Individual Satisfaction Score (1-5)</label>
-                        <select id="satisfactionScore" onchange="updateUI()">
-                            <option value="5">5 - Highly Satisfied</option>
-                            <option value="4">4 - Satisfied</option>
-                            <option value="3">3 - Neutral</option>
-                            <option value="2">2 - Dissatisfied</option>
-                            <option value="1">1 - Highly Dissatisfied</option>
-                        </select>
-                    </div>
-                    
-                    <div class="field-group full">
-                        <label>Satisfaction Narrative</label>
-                        <textarea id="satisfactionNarrative" placeholder="Details regarding satisfaction with current providers..." oninput="updateUI()"></textarea>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ── Module E: Signatures & Sign-Offs ── -->
-            <section class="form-section">
-                <div class="section-title"><span>E</span> Signatures & Sign-Offs</div>
-                <div class="form-grid">
-                    <div class="field-group">
-                        <label>Individual/Guardian Signature Date</label>
-                        <input type="date" id="sigIndividualDate" onchange="updateUI()">
-                    </div>
-                    <div class="field-group">
-                        <label>Case Manager (SSA) Signature Date</label>
-                        <input type="date" id="sigSsaDate" onchange="updateUI()">
-                    </div>
-                    <div class="field-group">
-                        <label>Supervisor Signature Date</label>
-                        <input type="date" id="sigSupervisorDate" onchange="updateUI()">
-                    </div>
-                </div>
-            </section>
-
-            <!-- ── Output Preview ── -->
-            <div class="output-section">
-                <div class="section-title" style="color: #c9a84c; border-color: #c9a84c">JSON PAYLOAD PREVIEW (SCHEMA ALIGNED)</div>
-                <div id="narrativeDisplay" class="narrative-box" style="font-family: monospace; white-space: pre; min-height: 400px; font-size: 12px; border-left: 4px solid var(--accent);">
-                    Complete sections to generate database schema payload...
-                </div>
-                <div class="btn-bar">
-                    <button class="btn btn-primary" onclick="copyNarrative()">📋 Copy JSON Payload</button>
-                    <button class="btn btn-warning" onclick="triggerSecureExport()" style="background: var(--primary); color: #000;">🔒 Export Secure Envelope (.qtr)</button>
-                    <button class="btn btn-success" onclick="window.print()">🖨️ Print / Save PDF</button>
-                </div>
-            </div>
-        </main>
+<!-- ── App Header ── -->
+<header class="app-header">
+  <div class="header-left">
+    <div class="header-logo">MC</div>
+    <div>
+      <div class="header-title">MCSDD Quarterly Program Review</div>
+      <div class="header-sub">Marion County Services for the Developmentally Disabled · DMH TCM Compliant</div>
     </div>
+  </div>
+  <div class="header-controls">
+    <button class="btn header-btn" onclick="triggerPcspImport()">📂 Fetch PCSP Snapshot / Draft</button>
+    <button class="btn danger-btn" id="purgeSessionBtn" onclick="triggerSecurityTimeout()" style="display:none;">🔒 Close &amp; Purge</button>
+    <span class="header-badge">🔒 Zero Footprint</span>
+  </div>
+  <input type="file" id="pcspImport" style="display:none" accept=".pcsp,.qtr" onchange="handlePcspImport(event)">
+</header>
 
-    <!-- ── HIPAA Password Modal ── -->
-    <div id="cryptoModal" class="modal-overlay" style="display: none;">
-        <div class="modal-card">
-            <h3 id="cryptoModalTitle" class="modal-title">Enter Decryption Password</h3>
-            <p id="cryptoModalDesc" class="modal-desc">This file contains protected health information (PHI) and is encrypted to comply with HIPAA security standards.</p>
-            <div class="field-group" style="margin-top: 15px; text-align: left;">
-                <label>Security Password</label>
-                <input type="password" id="cryptoPasswordInput" placeholder="••••••••" style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: var(--text-base);">
-                <div id="cryptoErrorMsg" style="color: var(--danger); font-size: 12px; margin-top: 5px; min-height: 18px;"></div>
-            </div>
-            <div class="modal-actions" style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
-                <button class="btn btn-outline" onclick="closeCryptoModal()">Cancel</button>
-                <button class="btn btn-success" id="cryptoSubmitBtn">Confirm</button>
-            </div>
+<!-- ── HIPAA Notice ── -->
+<div class="hipaa-bar">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+  HIPAA NOTICE: Zero-footprint tool. No PHI is transmitted, stored, or retained. All data exists only in browser tab RAM. Session auto-purges after 15 minutes of inactivity.
+</div>
+
+<!-- ── Review Info Bar ── -->
+<div class="info-grid">
+  <div class="info-field">
+    <label>Quarter Period</label>
+    <select id="quarter">
+      <option value="Q1 — Jan–Mar">Q1 — Jan–Mar</option>
+      <option value="Q2 — Apr–Jun" selected>Q2 — Apr–Jun</option>
+      <option value="Q3 — Jul–Sep">Q3 — Jul–Sep</option>
+      <option value="Q4 — Oct–Dec">Q4 — Oct–Dec</option>
+    </select>
+  </div>
+  <div class="info-field">
+    <label>Review Year</label>
+    <input type="text" id="year" value="2026" placeholder="YYYY"/>
+  </div>
+  <div class="info-field">
+    <label>Review Date</label>
+    <input type="date" id="reviewDate"/>
+  </div>
+  <div class="info-field">
+    <label>Individual ID / Code</label>
+    <input type="text" id="indivId" placeholder="Case ID or initials only"/>
+  </div>
+  <div class="info-field">
+    <label>Support Coordinator</label>
+    <input type="text" id="coordinator" placeholder="Coordinator name"/>
+  </div>
+  <div class="info-field">
+    <label>Program / Service Type</label>
+    <select id="programType">
+      <option>Day Habilitation</option>
+      <option selected>Individualized Supported Living (ISL)</option>
+      <option>Community Support</option>
+      <option>Targeted Case Management (TCM)</option>
+      <option>Residential / Group Home</option>
+      <option>Comprehensive Waiver</option>
+      <option>Partnership for Hope</option>
+    </select>
+  </div>
+</div>
+
+<!-- ── Main Content ── -->
+<main class="main">
+
+  <!-- Dynamic Revision Warning Banner -->
+  <div id="revisionWarningBanner" class="warning-banner">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    Submission will automatically flag this Individual's PCSP for a mandatory revision workflow.
+  </div>
+
+  <!-- ═══ Section 1: Contact & Documents ═══ -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">1</div>
+      <div class="section-title">Contact Type &amp; Documents Reviewed</div>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body" id="sec1">
+      <div class="field-row">
+        <label class="field-label">Contact Type This Quarter</label>
+        <div class="radio-group">
+          <label><input type="radio" name="contactType" value="face_to_face" checked/> Face-to-face (required at least annually)</label>
+          <label><input type="radio" name="contactType" value="phone"/> Phone / Video</label>
+          <label><input type="radio" name="contactType" value="both"/> Both</label>
         </div>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Face-to-Face Date (if applicable)</label>
+        <input type="date" id="f2fDate" style="max-width:210px;"/>
+      </div>
+      <div class="field-row">
+        <div class="divider-label">Documents Reviewed This Quarter</div>
+        <div class="checklist">
+          <label class="check-item"><input type="checkbox" id="doc_isp" checked/> Individual Support Plan (ISP)</label>
+          <label class="check-item"><input type="checkbox" id="doc_svc_logs" checked/> Service Delivery Logs</label>
+          <label class="check-item"><input type="checkbox" id="doc_provider_notes" checked/> Provider Progress Notes</label>
+          <label class="check-item"><input type="checkbox" id="doc_health"/> Health / Medical Records</label>
+          <label class="check-item"><input type="checkbox" id="doc_behavior"/> Behavior Support Documentation</label>
+          <label class="check-item"><input type="checkbox" id="doc_incident"/> Incident Reports</label>
+          <label class="check-item"><input type="checkbox" id="doc_finance"/> Personal Spending / Ledger</label>
+          <label class="check-item"><input type="checkbox" id="doc_agency"/> Agency Documentation Review</label>
+          <label class="check-item"><input type="checkbox" id="doc_rn"/> RN Oversight / Monthly Health Summary</label>
+          <label class="check-item"><input type="checkbox" id="doc_risk"/> Risk Screening</label>
+        </div>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Additional Documents / Other</label>
+        <input type="text" id="docsOther" placeholder="List any additional documentation reviewed..."/>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Section 2: Service Monitoring ═══ -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">2</div>
+      <div class="section-title">Service Monitoring — ISP Delivery Review</div>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body" id="sec2">
+      <p style="font-size:12px;color:var(--text3);margin-bottom:14px;">Per DMH TCM requirements: evaluate whether services are being furnished in accordance with the ISP, whether services are adequate, and identify any adjustments needed.</p>
+      <div id="servicesContainer"></div>
+      <button class="add-btn" onclick="addService()">+ Add Service</button>
+    </div>
+  </div>
+
+  <!-- ═══ Section 3: ISP Outcomes — SPLIT SCREEN ═══ -->
+  <div class="section-card" id="outcomesSection">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">3</div>
+      <div class="section-title">ISP Outcomes — Progress Review</div>
+      <span class="section-toggle">▾</span>
+    </div>
+    <!-- Sticky progress bar inside the section card -->
+    <div class="progress-bar-wrap" id="progressBarWrap">
+      <div class="progress-bar-row">
+        <span>Goal Evaluation Progress</span>
+        <span id="progressBarPercent">0% Evaluated</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressBarFill"></div>
+      </div>
+    </div>
+    <div class="section-body" id="sec3">
+      <p style="font-size:12px;color:var(--text3);margin-bottom:14px;">Evaluate whether authorized supports are helping the person attain their outcomes or maintain their current level. Select a goal on the left to evaluate it on the right.</p>
+      <!-- Split Screen Container -->
+      <div class="outcome-split">
+        <!-- Left: Goal Nav Sidebar -->
+        <div class="outcome-sidebar" id="outcomeSidebar">
+          <div class="outcome-sidebar-title">Active ISP Targets</div>
+          <div id="outcomeTabsList">
+            <div style="font-size:12px;color:var(--text3);padding:8px 4px;">Load a PCSP or add outcomes below.</div>
+          </div>
+        </div>
+        <!-- Right: Goal Editor -->
+        <div class="outcome-editor" id="outcomeEditor">
+          <div style="text-align:center;color:var(--text3);padding:60px 20px;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px;display:block;opacity:0.4"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+            <p style="font-size:13px;">Select an ISP target from the sidebar or add a new outcome to begin evaluation.</p>
+          </div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addOutcome()" style="margin-top:12px;">+ Add ISP Outcome / Goal</button>
+    </div>
+  </div>
+
+  <!-- ═══ Section 4: Health, Safety & Rights ═══ -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">4</div>
+      <div class="section-title">Health, Safety &amp; Rights Review</div>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body" id="sec4">
+      <div class="two-col field-row">
+        <div>
+          <label class="field-label">Health Events Since Last Review</label>
+          <div class="radio-group">
+            <label><input type="radio" name="healthEvents" value="none" checked/> None</label>
+            <label><input type="radio" name="healthEvents" value="yes"/> Yes</label>
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Safety Concerns Identified</label>
+          <div class="radio-group">
+            <label><input type="radio" name="safetyConcerns" value="none" checked/> None</label>
+            <label><input type="radio" name="safetyConcerns" value="yes"/> Yes</label>
+          </div>
+        </div>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Health / Safety Notes &amp; Medication Changes</label>
+        <textarea id="healthNotes" placeholder="Describe any health events, medical appointments, medication changes, or safety concerns noted this quarter..."></textarea>
+      </div>
+      <div class="field-row">
+        <div class="divider-label">Rights &amp; Dignity Observation</div>
+        <div class="radio-group" style="margin-bottom:8px;">
+          <label><input type="radio" name="rightsObs" value="upheld" checked/> Individual rights observed as upheld</label>
+          <label><input type="radio" name="rightsObs" value="concerns"/> Concerns identified</label>
+        </div>
+        <textarea id="rightsNotes" placeholder="Note any rights/dignity observations or areas needing attention..."></textarea>
+      </div>
+      <div class="field-row">
+        <div class="divider-label">Community Participation</div>
+        <div class="radio-group" style="margin-bottom:8px;">
+          <label><input type="radio" name="community" value="yes" checked/> Actively participating</label>
+          <label><input type="radio" name="community" value="limited"/> Limited this quarter</label>
+          <label><input type="radio" name="community" value="no"/> Not participating</label>
+        </div>
+        <textarea id="communityNotes" placeholder="Describe community integration activities, outings, and social participation this quarter..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Section 5: Incidents & Crisis ═══ -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">5</div>
+      <div class="section-title">Incidents, Crisis Events &amp; Reporting</div>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body" id="sec5">
+      <div class="field-row">
+        <label class="field-label">Reportable Incidents This Quarter</label>
+        <div class="radio-group" style="margin-bottom:10px;">
+          <label><input type="radio" name="incidents" value="none" checked/> No incidents to report</label>
+          <label><input type="radio" name="incidents" value="yes"/> Incident(s) occurred</label>
+        </div>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Incident / Crisis Summary</label>
+        <textarea id="incidentNotes" placeholder="Summarize any incidents, crisis events, or ANE reports. Include dates, nature of event, and actions taken. Do not include full identifiers."></textarea>
+      </div>
+      <div class="field-row">
+        <label class="field-label">CIMOR Event Reporting Status</label>
+        <select id="cimorStatus">
+          <option>Not applicable</option>
+          <option>Filed — no further action needed</option>
+          <option>Filed — follow-up in progress</option>
+          <option>Pending filing</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ AI Narrative Generator ═══ -->
+  <div class="ai-section">
+    <h3>🤖 Nova — Clinical Narrative Compiler</h3>
+    <p>Generates a DMH-compliant quarterly review narrative from your form data. 100% local — operating entirely in browser RAM, zero network calls.</p>
+    <div class="ai-controls">
+      <button class="ai-btn primary" onclick="generateNarrative('case_note')">Generate Case Note</button>
+      <button class="ai-btn" onclick="generateNarrative('summary_report')">Generate Summary Report</button>
+      <button class="ai-btn" onclick="clearOutput()">Clear</button>
+    </div>
+    <div id="aiOutput" class="output-box">
+      <button class="copy-btn" onclick="copyOutput()">Copy</button>
+      <div id="aiContent"></div>
+    </div>
+  </div>
+
+  <!-- ═══ Section 6: Conclusions & Recommendations ═══ -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-num">6</div>
+      <div class="section-title">Conclusions &amp; Recommendations</div>
+      <span class="section-toggle">▾</span>
+    </div>
+    <div class="section-body" id="sec6">
+      <div class="field-row">
+        <label class="field-label">ISP Plan Revision Required?</label>
+        <div class="radio-group" style="margin-bottom:8px;">
+          <label><input type="radio" name="planRevision" value="no" checked onchange="checkRevisionBanner()"/> No revision needed at this time</label>
+          <label><input type="radio" name="planRevision" value="minor" onchange="checkRevisionBanner()"/> Minor revision recommended</label>
+          <label><input type="radio" name="planRevision" value="full" onchange="checkRevisionBanner()"/> Full plan review warranted</label>
+        </div>
+        <textarea id="revisionRationale" placeholder="If revision recommended, provide rationale..." style="min-height:52px;"></textarea>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Overall Quarter Assessment</label>
+        <select id="quarterAssessment">
+          <option value="">Select overall assessment...</option>
+          <option>Supports are effectively addressing identified outcomes</option>
+          <option>Supports are partially effective — adjustments recommended</option>
+          <option>Supports are not adequately addressing outcomes — intervention required</option>
+          <option>Insufficient data this quarter — additional monitoring needed</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="divider-label">Action Items / Follow-Up Required</div>
+        <div id="actionContainer"></div>
+        <button class="add-btn" onclick="addAction()" style="margin-top:6px;">+ Add Action Item</button>
+      </div>
+      <div class="two-col field-row" style="margin-top:14px;">
+        <div>
+          <label class="field-label">Next Scheduled Review Date</label>
+          <input type="date" id="nextReview"/>
+        </div>
+        <div>
+          <label class="field-label">Coordinator Signature / Initials</label>
+          <input type="text" id="sigInitials" placeholder="Initials for record"/>
+        </div>
+      </div>
+      <div class="field-row">
+        <label class="field-label">Additional Coordinator Notes</label>
+        <textarea id="coordNotes" placeholder="Any additional observations or notes not captured above..."></textarea>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── Footer Bar ── -->
+<div class="footer-bar">
+  <button class="btn" onclick="clearFormClick()">🗑 Clear Form</button>
+  <button class="btn primary-btn" onclick="triggerSecureExport()">🔒 Export Secure Envelope (.qtr)</button>
+  <button class="btn accent-btn" onclick="window.print()">🖨 Print / Export PDF</button>
+</div>
+
+<!-- ── Password Modal ── -->
+<div id="cryptoModal" class="modal-overlay" style="display:none;">
+  <div class="modal-card">
+    <h3 id="cryptoModalTitle">Enter Decryption Password</h3>
+    <p id="cryptoModalDesc">This file contains protected health information (PHI) and is encrypted to HIPAA security standards.</p>
+    <div class="field-row">
+      <label class="field-label">Security Password</label>
+      <input type="password" id="cryptoPasswordInput" placeholder="••••••••" style="width:100%;"/>
+      <div id="cryptoErrorMsg" style="color:var(--danger);font-size:11px;margin-top:5px;min-height:16px;font-weight:600;"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeCryptoModal()">Cancel</button>
+      <button class="btn primary-btn" id="cryptoSubmitBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  MCSDD Quarterly Program Review — Core Engine
+//  Zero-Footprint | HIPAA/MO-DMH Compliant
+// ═══════════════════════════════════════════════════════
+
+// ── State ──
+let linkedPcsp = null;
+let cryptoModalMode = "";
+let cryptoTempData = null;
+let cryptoTempFilename = "";
+let idleTimeout = null;
+const IDLE_TIME_LIMIT = 15 * 60 * 1000;
+
+// Split-screen outcome state
+let outcomes = [];       // Array of { id, name, domain, actionSteps, status, priority, notes, revision }
+let activeOutcomeIdx = 0;
+let moGuideOpen = false;
+
+// Missouri Quality Outcomes Framework
+const MO_QUALITY_OUTCOMES = {
+  daily_life: {
+    title: "Daily Life: Participation & Choice",
+    desc: "Supports individuals to make informed choices in pursuing daily activities, volunteerism, hobbies, and leisure.",
+    points: [
+      "Do you have people who explain options and choices in a way that makes sense to you?",
+      "When was the last time you tried something new? Would you like to?",
+      "How do you spend your day? What do you like most / least?",
+      "Have you had chances to explore a variety of opportunities to determine areas of interest?"
+    ]
+  },
+  employment: {
+    title: "Employment: Self-Determination in Work",
+    desc: "Assists individuals in securing integrated, competitive employment and career exploration.",
+    points: [
+      "Do you feel your current position or career search aligns with your personal goals?",
+      "What support or coaching do you need to increase your independent task mastery?",
+      "Are you satisfied with your work environment, hours, wages, and travel arrangements?"
+    ]
+  },
+  community: {
+    title: "Community Integration: Meaningful Connections",
+    desc: "Promotes quality of life through volunteerism, recreational activities, and natural relationships.",
+    points: [
+      "How often do you go into the community to do things you enjoy?",
+      "Who do you spend time with? Do you feel supported to build friendships?",
+      "Are there local organizations or volunteer groups you want to participate in?",
+      "Are there transportation or physical barriers limiting your community involvement?"
+    ]
+  },
+  health: {
+    title: "Health & Safety: Personal Well-Being",
+    desc: "Ensures the individual resides in a safe, healthy environment with appropriate medical supports.",
+    points: [
+      "Do you feel safe and comfortable in your current living arrangement?",
+      "Who do you contact if you have a health concern or emergency?",
+      "Are you supported to manage your medications and understand why you take them?",
+      "Are staff correctly tracking your vitals, diet adjustments, or health trends?"
+    ]
+  },
+  default: {
+    title: "Missouri Quality Outcomes: General Standard",
+    desc: "Marion County SB40 Service Coordination audit guide for verifying outcome achievement and provider compliance.",
+    points: [
+      "Are the authorized supports assisting the individual to attain their outcomes?",
+      "Do provider log notes support the progress metric selected?",
+      "Are there any barriers or concerns that require a PCSP revision workflow?"
+    ]
+  }
+};
+
+function getMoOutcome(domain) {
+  if (!domain) return MO_QUALITY_OUTCOMES.default;
+  const d = domain.toLowerCase();
+  if (d.includes("employ") || d.includes("work") || d.includes("job")) return MO_QUALITY_OUTCOMES.employment;
+  if (d.includes("communit") || d.includes("social") || d.includes("integrat") || d.includes("network")) return MO_QUALITY_OUTCOMES.community;
+  if (d.includes("health") || d.includes("safe") || d.includes("med") || d.includes("wellbeing")) return MO_QUALITY_OUTCOMES.health;
+  if (d.includes("daily") || d.includes("life") || d.includes("cook") || d.includes("home") || d.includes("leisure")) return MO_QUALITY_OUTCOMES.daily_life;
+  return MO_QUALITY_OUTCOMES.default;
+}
+
+// ── Section Collapse ──
+function toggleSection(header) {
+  const body = header.nextElementSibling.classList.contains('progress-bar-wrap')
+    ? header.nextElementSibling.nextElementSibling
+    : header.nextElementSibling;
+  const toggle = header.querySelector('.section-toggle');
+  const isCollapsed = body.classList.toggle('collapsed');
+  toggle.textContent = isCollapsed ? '▸' : '▾';
+  // Also toggle progress bar for section 3
+  if (header.closest('#outcomesSection')) {
+    const pb = document.getElementById('progressBarWrap');
+    if (pb) pb.style.display = isCollapsed ? 'none' : (outcomes.length ? 'block' : 'none');
+  }
+}
+
+// ── Idle Timer (HIPAA) ──
+function resetIdleTimer() {
+  if (idleTimeout) clearTimeout(idleTimeout);
+  idleTimeout = setTimeout(() => {
+    clearFormFull();
+    alert("🔒 Security Timeout: Session has been cleared. All decrypted clinical data purged from RAM per HIPAA compliance.");
+  }, IDLE_TIME_LIMIT);
+}
+['mousemove','keypress','click','scroll'].forEach(ev => window.addEventListener(ev, resetIdleTimer));
+
+// ── Revision Banner Check ──
+function checkRevisionBanner() {
+  const planRevision = document.querySelector('input[name="planRevision"]:checked')?.value || 'no';
+  const outcomeRevision = outcomes.some(o => o.revision === true);
+  const show = planRevision !== 'no' || outcomeRevision;
+  const banner = document.getElementById('revisionWarningBanner');
+  if (banner) banner.style.display = show ? 'flex' : 'none';
+}
+
+// ── Service Monitoring Repeater ──
+let svcCount = 0;
+function addService(data) {
+  resetIdleTimer();
+  svcCount++;
+  const c = document.getElementById('servicesContainer');
+  const id = 'svc_' + Date.now() + '_' + svcCount;
+  const div = document.createElement('div');
+  div.className = 'repeater-item';
+  div.id = id;
+  div.innerHTML = `
+    <div class="repeater-item-header">
+      <span class="item-badge">Service ${svcCount}</span>
+      <button class="remove-btn" onclick="document.getElementById('${id}').remove(); resetIdleTimer();">✕ Remove</button>
+    </div>
+    <div class="field-row">
+      <label class="field-label">Service Name / Type</label>
+      <input type="text" class="svc-name" value="${data?.name||''}" placeholder="e.g. Day Habilitation, ISL, Community Support..."/>
+    </div>
+    <div class="two-col field-row">
+      <div>
+        <label class="field-label">Provider / Agency</label>
+        <input type="text" class="svc-provider" value="${data?.provider||''}" placeholder="Provider or agency name"/>
+      </div>
+      <div>
+        <label class="field-label">Funding Source</label>
+        <select class="svc-funding">
+          <option ${data?.funding==='Waiver'?'selected':''}>Waiver</option>
+          <option ${data?.funding==='General Revenue'?'selected':''}>General Revenue</option>
+          <option ${data?.funding==='Partnership for Hope'?'selected':''}>Partnership for Hope</option>
+          <option ${data?.funding==='Self-Pay'?'selected':''}>Self-Pay</option>
+        </select>
+      </div>
+    </div>
+    <div class="two-col field-row">
+      <div>
+        <label class="field-label">Delivered Per ISP?</label>
+        <select class="svc-delivered">
+          <option ${!data?.delivered||data?.delivered==='Yes — in accordance with ISP'?'selected':''}>Yes — in accordance with ISP</option>
+          <option ${data?.delivered==='Partially — see notes'?'selected':''}>Partially — see notes</option>
+          <option ${data?.delivered==='No — not delivered as specified'?'selected':''}>No — not delivered as specified</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label">Service Adequate?</label>
+        <select class="svc-adequate">
+          <option ${!data?.adequate||data?.adequate==='Yes — meeting identified needs'?'selected':''}>Yes — meeting identified needs</option>
+          <option ${data?.adequate==='Partially — modifications recommended'?'selected':''}>Partially — modifications recommended</option>
+          <option ${data?.adequate==='No — significant gaps identified'?'selected':''}>No — significant gaps identified</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <label class="field-label">Monitoring Notes / SC Observations</label>
+      <textarea class="svc-notes" placeholder="Document observations, provider contact, delivery status, any issues...">${data?.notes||''}</textarea>
+    </div>`;
+  c.appendChild(div);
+}
+
+// ═══════════════════════════════════════════════════════
+//  SPLIT-SCREEN OUTCOME ENGINE
+// ═══════════════════════════════════════════════════════
+
+function addOutcome(data) {
+  resetIdleTimer();
+  const newOutcome = {
+    id: 'out_' + Date.now() + '_' + outcomes.length,
+    name: data?.name || data?.goal || data?.outcomeText || data?.outcome || '',
+    domain: data?.domain || data?._domain || '',
+    actionSteps: data?.actionSteps || data?._actionSteps || data?.implementation || '',
+    status: data?.status || data?.progress_status || 'Making progress toward outcome',
+    priority: data?.priority || 'Standard',
+    notes: data?.notes || data?.data_evidence_summary || data?.evidence || '',
+    revision: data?.revision || data?.trigger_pcsp_revision || false
+  };
+  outcomes.push(newOutcome);
+  activeOutcomeIdx = outcomes.length - 1;
+  renderOutcomesSplit();
+  updateProgressBar();
+  checkRevisionBanner();
+}
+
+function removeOutcome(idx) {
+  resetIdleTimer();
+  outcomes.splice(idx, 1);
+  if (activeOutcomeIdx >= outcomes.length) activeOutcomeIdx = Math.max(0, outcomes.length - 1);
+  renderOutcomesSplit();
+  updateProgressBar();
+  checkRevisionBanner();
+}
+
+function selectOutcomeTab(idx) {
+  resetIdleTimer();
+  activeOutcomeIdx = idx;
+  renderOutcomesSplit();
+}
+
+function updateOutcomeField(idx, field, val) {
+  resetIdleTimer();
+  if (!outcomes[idx]) return;
+  outcomes[idx][field] = val;
+  // Auto-flag revision on certain status values
+  if (field === 'status') {
+    const flagStatuses = ['Outcome achieved — new goal needed', 'Regression noted'];
+    outcomes[idx].revision = flagStatuses.includes(val);
+    // Re-render tabs to update badges without losing editor focus
+    renderOutcomeTabs();
+  }
+  checkRevisionBanner();
+  updateProgressBar();
+}
+
+function toggleOutcomeRevision(idx) {
+  resetIdleTimer();
+  outcomes[idx].revision = !outcomes[idx].revision;
+  renderOutcomeTabs();
+  checkRevisionBanner();
+}
+
+function renderOutcomeTabs() {
+  const tabsList = document.getElementById('outcomeTabsList');
+  if (!tabsList) return;
+  if (!outcomes.length) {
+    tabsList.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 4px;">Load a PCSP or add outcomes below.</div>';
+    return;
+  }
+  tabsList.innerHTML = outcomes.map((o, idx) => {
+    const shortName = o.name ? (o.name.length > 38 ? o.name.substring(0, 38) + '…' : o.name) : 'Untitled Outcome';
+    return `<button class="outcome-tab ${idx === activeOutcomeIdx ? 'active' : ''}" onclick="selectOutcomeTab(${idx})">
+      <div class="tab-header-row">
+        <span class="tab-label">Target #${idx + 1}</span>
+        ${o.revision ? '<span class="tab-flag-badge">⚠ Revision</span>' : ''}
+      </div>
+      <div class="tab-desc">${shortName}</div>
+    </button>`;
+  }).join('');
+}
+
+function renderOutcomeEditor() {
+  const editor = document.getElementById('outcomeEditor');
+  if (!editor) return;
+  if (!outcomes.length) {
+    editor.innerHTML = `<div style="text-align:center;color:var(--text3);padding:60px 20px;">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px;display:block;opacity:0.4"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      <p style="font-size:13px;">Select an ISP target from the sidebar or add a new outcome to begin evaluation.</p>
+    </div>`;
+    return;
+  }
+  const o = outcomes[activeOutcomeIdx];
+  const mq = getMoOutcome(o.domain);
+  editor.innerHTML = `
+    <div class="editor-eyebrow">Evaluating Target #${activeOutcomeIdx + 1} of ${outcomes.length}</div>
+    <div class="editor-title">${o.name || '<em style="color:var(--text3)">No goal text entered yet</em>'}</div>
+
+    ${o.actionSteps ? `<div class="ref-card">
+      <div class="ref-card-label">Authorized Action Steps &amp; Provider Scope</div>
+      <div class="ref-card-text">${o.actionSteps}</div>
+    </div>` : ''}
+
+    <!-- MO Quality Outcomes Guide -->
+    <div class="mo-guide-card">
+      <div class="mo-guide-header" onclick="moGuideOpen=!moGuideOpen;renderOutcomeEditor();">
+        <span>📋 MO Quality Outcomes — Audit Guide</span>
+        <span>${moGuideOpen ? '▲' : '▼'}</span>
+      </div>
+      ${moGuideOpen ? `<div class="mo-guide-body">
+        <strong style="font-size:13px;color:var(--primary);">${mq.title}</strong>
+        <p style="margin-top:6px;">${mq.desc}</p>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--accent);margin-bottom:6px;">State Audit Talking Points:</div>
+        <ul>${mq.points.map(p => `<li>${p}</li>`).join('')}</ul>
+      </div>` : ''}
     </div>
 
-    <script src="app.js"></script>
+    <!-- Editable Evaluation Fields -->
+    <div class="field-row">
+      <label class="field-label">Goal Text / Outcome Statement</label>
+      <input type="text" value="${o.name}" oninput="updateOutcomeField(${activeOutcomeIdx},'name',this.value)" placeholder="Enter or edit the ISP outcome statement..."/>
+    </div>
+    <div class="two-col field-row">
+      <div>
+        <label class="field-label">Domain / Area</label>
+        <input type="text" value="${o.domain}" oninput="updateOutcomeField(${activeOutcomeIdx},'domain',this.value)" placeholder="e.g. Community Integration, Employment..."/>
+      </div>
+      <div>
+        <label class="field-label">Priority Level</label>
+        <select onchange="updateOutcomeField(${activeOutcomeIdx},'priority',this.value)">
+          <option ${o.priority==='High'?'selected':''}>High</option>
+          <option ${!o.priority||o.priority==='Standard'?'selected':''}>Standard</option>
+          <option ${o.priority==='Monitoring only'?'selected':''}>Monitoring only</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <label class="field-label">Quarterly Progress Status</label>
+      <select onchange="updateOutcomeField(${activeOutcomeIdx},'status',this.value)">
+        <option ${o.status==='Making progress toward outcome'?'selected':''}>Making progress toward outcome</option>
+        <option ${o.status==='Maintaining current level'?'selected':''}>Maintaining current level</option>
+        <option ${o.status==='Outcome achieved — new goal needed'?'selected':''}>Outcome achieved — new goal needed</option>
+        <option ${o.status==='Regression noted'?'selected':''}>Regression noted</option>
+        <option ${o.status==='Insufficient data this quarter'?'selected':''}>Insufficient data this quarter</option>
+        <option ${o.status==='Outcome not yet initiated'?'selected':''}>Outcome not yet initiated</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <label class="field-label">Data &amp; Provider Evidence Summary</label>
+      <textarea rows="4" placeholder="Summarize verification logs, provider notes, observations, and SC contacts that support the progress rating above..." oninput="updateOutcomeField(${activeOutcomeIdx},'notes',this.value)">${o.notes}</textarea>
+    </div>
+
+    <!-- Revision Hook -->
+    <div class="revision-hook ${o.revision ? 'flagged' : ''}">
+      <input type="checkbox" ${o.revision ? 'checked' : ''} onchange="toggleOutcomeRevision(${activeOutcomeIdx})"/>
+      <div>
+        <strong>Trigger Mandatory PCSP Revision</strong>
+        <p>Checking this forces creation of an immediate plan amendment workflow upon package submission.</p>
+      </div>
+    </div>
+
+    <!-- Remove this outcome -->
+    <div style="margin-top:14px;text-align:right;">
+      <button class="btn" style="font-size:11px;color:var(--danger);border-color:var(--danger);" onclick="removeOutcome(${activeOutcomeIdx})">✕ Remove This Outcome</button>
+    </div>`;
+}
+
+function renderOutcomesSplit() {
+  renderOutcomeTabs();
+  renderOutcomeEditor();
+}
+
+function updateProgressBar() {
+  const wrap = document.getElementById('progressBarWrap');
+  const fill = document.getElementById('progressBarFill');
+  const pct = document.getElementById('progressBarPercent');
+  if (!wrap || !fill || !pct) return;
+  if (!outcomes.length) {
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = 'block';
+  const evaluated = outcomes.filter(o => o.notes && o.notes.trim().length > 3).length;
+  const percent = Math.round((evaluated / outcomes.length) * 100);
+  fill.style.width = percent + '%';
+  pct.textContent = `${percent}% Evaluated (${evaluated} of ${outcomes.length})`;
+}
+
+// ── Action Items ──
+let actionCount = 0;
+function addAction(text) {
+  resetIdleTimer();
+  actionCount++;
+  const c = document.getElementById('actionContainer');
+  const div = document.createElement('div');
+  div.className = 'action-item';
+  div.innerHTML = `<input type="text" class="action-text" value="${text||''}" placeholder="Action item — who is responsible and by when..."/>
+    <button class="remove-btn" onclick="this.closest('.action-item').remove();resetIdleTimer();" style="padding:7px 9px;border:1px solid #fca5a5;border-radius:6px;">✕</button>`;
+  c.appendChild(div);
+}
+
+// ── PCSP File Loading ──
+function triggerPcspImport() {
+  resetIdleTimer();
+  document.getElementById('pcspImport').click();
+}
+
+function handlePcspImport(e) {
+  resetIdleTimer();
+  const file = e.target.files[0];
+  if (!file) return;
+  cryptoTempFilename = file.name;
+  const reader = new FileReader();
+  reader.onload = async function(event) {
+    const fileBuffer = event.target.result;
+    const firstByte = new Uint8Array(fileBuffer)[0];
+    if (firstByte === 123) { // '{' = plaintext JSON
+      try {
+        const text = new TextDecoder().decode(fileBuffer);
+        loadPcspData(JSON.parse(text));
+      } catch (err) {
+        alert("Error parsing plaintext JSON file."); console.error(err);
+      }
+    } else {
+      openCryptoModal("decrypt", fileBuffer);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function loadPcspData(data) {
+  resetIdleTimer();
+  linkedPcsp = data;
+
+  // Demographics
+  document.getElementById('indivId').value = data.coverDmhID || data.individual_id || '';
+  document.getElementById('coordinator').value = data.coordinator || data.case_manager_id || '';
+
+  // Quarter
+  if (data.review_quarter) {
+    const qMap = { 'Q1':'Q1 — Jan–Mar','Q2':'Q2 — Apr–Jun','Q3':'Q3 — Jul–Sep','Q4':'Q4 — Oct–Dec' };
+    const match = Object.keys(qMap).find(k => data.review_quarter.includes(k));
+    if (match) document.getElementById('quarter').value = qMap[match];
+  }
+  if (data.year) document.getElementById('year').value = data.year;
+  if (data.reviewDate) document.getElementById('reviewDate').value = data.reviewDate;
+  if (data.programType) document.getElementById('programType').value = data.programType;
+
+  // Purge button
+  document.getElementById('purgeSessionBtn').style.display = 'inline-flex';
+
+  // Reset containers
+  document.getElementById('servicesContainer').innerHTML = '';
+  outcomes = []; activeOutcomeIdx = 0; svcCount = 0; actionCount = 0;
+  document.getElementById('actionContainer').innerHTML = '';
+
+  // Services
+  const svcs = data.services || data._programServices || data.service_monitoring || [];
+  svcs.forEach(s => addService({ name: s.service || s.name || s.service_name || '', provider: s.provider || s.provider_name || '', funding: s.funding || s.funding_source || 'Waiver', notes: s.notes || s.monitoring_notes || '', delivered: s.delivered || s.delivered_per_isp || '', adequate: s.adequate || s.service_adequate || '' }));
+
+  // Outcomes
+  const rawGoals = data.goals || data._goalsData || data.outcome_progress_tracking || data.outcomes || [];
+  const filtered = rawGoals.filter(g => g.is_active !== false);
+  const svcSummary = svcs.map(s => `${s.service || s.name || ''} (${s.provider || s.provider_name || ''})`).filter(Boolean).join('; ');
+  filtered.forEach(g => addOutcome({ ...g, actionSteps: g.implementation || g.actionSteps || g._actionSteps || svcSummary }));
+
+  // Map QTR draft fields
+  if (data.contactType) {
+    const r = document.querySelector(`input[name="contactType"][value="${data.contactType}"]`);
+    if (r) r.checked = true;
+  }
+  if (data.f2fDate) document.getElementById('f2fDate').value = data.f2fDate;
+  if (data.docsReviewed && Array.isArray(data.docsReviewed)) {
+    const docMap = { 'Individual Support Plan (ISP)': 'doc_isp', 'Service Delivery Logs': 'doc_svc_logs', 'Provider Progress Notes': 'doc_provider_notes', 'Health / Medical Records': 'doc_health', 'Behavior Support Documentation': 'doc_behavior', 'Incident Reports': 'doc_incident', 'Personal Spending / Ledger': 'doc_finance', 'Agency Documentation Review': 'doc_agency', 'RN Oversight / Monthly Health Summary': 'doc_rn', 'Risk Screening': 'doc_risk' };
+    Object.values(docMap).forEach(id => { const el = document.getElementById(id); if (el) el.checked = false; });
+    data.docsReviewed.forEach(d => { const id = docMap[d]; if (id) { const el = document.getElementById(id); if (el) el.checked = true; } });
+  }
+  if (data.docsOther) document.getElementById('docsOther').value = data.docsOther;
+
+  // Health, Safety, etc.
+  if (data.healthEvents) { const r = document.querySelector(`input[name="healthEvents"][value="${data.healthEvents}"]`); if (r) r.checked = true; }
+  if (data.safetyConcerns) { const r = document.querySelector(`input[name="safetyConcerns"][value="${data.safetyConcerns}"]`); if (r) r.checked = true; }
+  if (data.healthNotes) document.getElementById('healthNotes').value = data.healthNotes;
+  if (data.rightsObs) { const r = document.querySelector(`input[name="rightsObs"][value="${data.rightsObs}"]`); if (r) r.checked = true; }
+  if (data.rightsNotes) document.getElementById('rightsNotes').value = data.rightsNotes;
+  if (data.community) { const r = document.querySelector(`input[name="community"][value="${data.community}"]`); if (r) r.checked = true; }
+  if (data.communityNotes) document.getElementById('communityNotes').value = data.communityNotes;
+  if (data.incidents) { const r = document.querySelector(`input[name="incidents"][value="${data.incidents}"]`); if (r) r.checked = true; }
+  if (data.incidentNotes) document.getElementById('incidentNotes').value = data.incidentNotes;
+  if (data.cimorStatus) document.getElementById('cimorStatus').value = data.cimorStatus;
+
+  // Health & Safety sub-objects from QTR schema
+  if (data.health_welfare_safety) {
+    if (data.health_welfare_safety.mui_narrative) document.getElementById('healthNotes').value = data.health_welfare_safety.mui_narrative;
+    if (data.health_welfare_safety.behavioral_narrative) {
+      document.getElementById('rightsNotes').value += (document.getElementById('rightsNotes').value ? '\n' : '') + data.health_welfare_safety.behavioral_narrative;
+    }
+    if (data.health_welfare_safety.medication_health_changes) {
+      document.getElementById('healthNotes').value += '\n' + data.health_welfare_safety.medication_health_changes;
+    }
+  }
+
+  if (data.planRevision) { const r = document.querySelector(`input[name="planRevision"][value="${data.planRevision}"]`); if (r) r.checked = true; }
+  if (data.revisionRationale) document.getElementById('revisionRationale').value = data.revisionRationale;
+  if (data.quarterAssessment) document.getElementById('quarterAssessment').value = data.quarterAssessment;
+  if (data.actions && Array.isArray(data.actions)) data.actions.forEach(a => addAction(a));
+  if (data.nextReview) document.getElementById('nextReview').value = data.nextReview;
+  if (data.sigInitials) document.getElementById('sigInitials').value = data.sigInitials;
+  if (data.coordNotes) document.getElementById('coordNotes').value = data.coordNotes;
+
+  renderOutcomesSplit();
+  updateProgressBar();
+  checkRevisionBanner();
+}
+
+// ── Collect Form Data ──
+function collectFormData() {
+  const docsReviewed = [];
+  [['doc_isp','Individual Support Plan (ISP)'],['doc_svc_logs','Service Delivery Logs'],['doc_provider_notes','Provider Progress Notes'],['doc_health','Health / Medical Records'],['doc_behavior','Behavior Support Documentation'],['doc_incident','Incident Reports'],['doc_finance','Personal Spending / Ledger'],['doc_agency','Agency Documentation Review'],['doc_rn','RN Oversight / Monthly Health Summary'],['doc_risk','Risk Screening']].forEach(([id, label]) => { if (document.getElementById(id)?.checked) docsReviewed.push(label); });
+  const docsOther = document.getElementById('docsOther').value;
+  if (docsOther) docsReviewed.push(docsOther);
+
+  const services = [];
+  document.querySelectorAll('#servicesContainer .repeater-item').forEach(item => {
+    services.push({ name: item.querySelector('.svc-name')?.value||'', provider: item.querySelector('.svc-provider')?.value||'', funding: item.querySelector('.svc-funding')?.value||'Waiver', delivered: item.querySelector('.svc-delivered')?.value||'', adequate: item.querySelector('.svc-adequate')?.value||'', notes: item.querySelector('.svc-notes')?.value||'' });
+  });
+
+  const actions = [];
+  document.querySelectorAll('.action-text').forEach(el => { if (el.value.trim()) actions.push(el.value.trim()); });
+
+  return {
+    quarter: document.getElementById('quarter').value,
+    year: document.getElementById('year').value,
+    reviewDate: document.getElementById('reviewDate').value,
+    indivId: document.getElementById('indivId').value,
+    coordinator: document.getElementById('coordinator').value,
+    programType: document.getElementById('programType').value,
+    contactType: document.querySelector('input[name="contactType"]:checked')?.value||'face_to_face',
+    f2fDate: document.getElementById('f2fDate').value,
+    docsReviewed,
+    services,
+    outcomes: outcomes.map(o => ({ ...o })),
+    healthEvents: document.querySelector('input[name="healthEvents"]:checked')?.value||'none',
+    safetyConcerns: document.querySelector('input[name="safetyConcerns"]:checked')?.value||'none',
+    healthNotes: document.getElementById('healthNotes').value,
+    rightsObs: document.querySelector('input[name="rightsObs"]:checked')?.value||'upheld',
+    rightsNotes: document.getElementById('rightsNotes').value,
+    community: document.querySelector('input[name="community"]:checked')?.value||'yes',
+    communityNotes: document.getElementById('communityNotes').value,
+    incidents: document.querySelector('input[name="incidents"]:checked')?.value||'none',
+    incidentNotes: document.getElementById('incidentNotes').value,
+    cimorStatus: document.getElementById('cimorStatus').value,
+    planRevision: document.querySelector('input[name="planRevision"]:checked')?.value||'no',
+    revisionRationale: document.getElementById('revisionRationale').value,
+    quarterAssessment: document.getElementById('quarterAssessment').value,
+    actions,
+    nextReview: document.getElementById('nextReview').value,
+    sigInitials: document.getElementById('sigInitials').value,
+    coordNotes: document.getElementById('coordNotes').value
+  };
+}
+
+// ── Local Narrative Compiler (100% offline, RAM only) ──
+function generateNarrative(type) {
+  resetIdleTimer();
+  const d = collectFormData();
+  const isNote = type === 'case_note';
+  let t = '';
+  if (isNote) {
+    t += `QUARTERLY REVIEW — PERIOD: ${d.quarter} ${d.year}\n`;
+    t += `Support Coordinator: ${d.coordinator || 'Not Specified'}\n`;
+    t += `Individual ID: ${d.indivId || 'N/A'}\n`;
+    t += `Program: ${d.programType}\n`;
+    t += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+    t += `1. CONTACT & RECORDS REVIEW:\n- Contact Type: ${d.contactType === 'face_to_face' ? 'Face-to-face' : d.contactType === 'phone' ? 'Phone/Video' : 'Both'}${d.f2fDate ? ' on ' + d.f2fDate : ''}\n- Documents Reviewed: ${d.docsReviewed.join(', ') || 'None specified.'}\n\n`;
+    t += `2. SERVICE DELIVERY MONITORING:\n`;
+    if (d.services.length) d.services.forEach((s,i) => { t += `- Service #${i+1}: ${s.name} | Provider: ${s.provider} | Delivered per ISP: ${s.delivered} | Adequacy: ${s.adequate}\n  Notes: ${s.notes || 'No issues reported.'}\n`; });
+    else t += `- No services recorded.\n`;
+    t += `\n3. ISP OUTCOME PROGRESS:\n`;
+    if (d.outcomes.length) d.outcomes.forEach((o,i) => { t += `- Outcome #${i+1}: "${o.name}" | Status: ${o.status} | Revision Flagged: ${o.revision ? 'YES' : 'No'}\n  Evidence: ${o.notes || 'No documentation provided.'}\n`; });
+    else t += `- No outcomes recorded.\n`;
+    t += `\n4. HEALTH, WELFARE & SAFETY:\n- Health Events: ${d.healthEvents === 'yes' ? 'Reported' : 'None'}\n- Safety Concerns: ${d.safetyConcerns === 'yes' ? 'Identified' : 'None'}\n- Notes: ${d.healthNotes || 'N/A'}\n- Rights Observed: ${d.rightsObs === 'upheld' ? 'Upheld' : 'Concerns identified'} — ${d.rightsNotes || 'N/A'}\n- Community Participation: ${d.community} — ${d.communityNotes || 'N/A'}\n`;
+    t += `\n5. INCIDENTS & CRISIS:\n- Reportable Incidents: ${d.incidents === 'yes' ? 'Yes' : 'None'}\n- Summary: ${d.incidentNotes || 'N/A'}\n- CIMOR Status: ${d.cimorStatus}\n`;
+    t += `\n6. CONCLUSIONS:\n- Plan Revision Required: ${d.planRevision.toUpperCase()} — ${d.revisionRationale || 'N/A'}\n- Overall Assessment: ${d.quarterAssessment || 'Supports remain effective.'}\n- Actions: ${d.actions.length ? d.actions.map((a,i) => `\n  [ ] ${a}`).join('') : ' None.'}\n- Next Review: ${d.nextReview || 'TBD'} | Initials: ${d.sigInitials || '___'}\n- Notes: ${d.coordNotes || 'None'}`;
+  } else {
+    t += `════════════════════════════════════════════════════════════════\n`;
+    t += `MARION COUNTY SERVICES FOR THE DEVELOPMENTALLY DISABLED (MCSDD)\n`;
+    t += `FORMAL QUARTERLY PROGRAM SUMMARY REPORT — TCM COMPLIANT\n`;
+    t += `════════════════════════════════════════════════════════════════\n\n`;
+    t += `COORDINATOR: ${d.coordinator} | PERIOD: ${d.quarter} ${d.year} | PROGRAM: ${d.programType}\nINDIVIDUAL ID: ${d.indivId || 'N/A'} | REVIEW DATE: ${d.reviewDate || 'N/A'}\n\n`;
+    t += `I. DOCUMENTS REVIEWED\n────────────────────────────────────────────────────────────────\n${d.docsReviewed.join(', ') || 'None recorded.'}\n\n`;
+    t += `II. SERVICE MONITORING & DELIVERY REVIEW\n────────────────────────────────────────────────────────────────\n`;
+    if (d.services.length) d.services.forEach((s,i) => { t += `Service #${i+1}: ${s.name}\n  Provider: ${s.provider} | Funding: ${s.funding}\n  Delivered per ISP: ${s.delivered}\n  Service Adequacy: ${s.adequate}\n  Notes: ${s.notes || 'No issues noted.'}\n\n`; });
+    else t += `No waiver services recorded.\n\n`;
+    t += `III. ISP OUTCOME PROGRESS\n────────────────────────────────────────────────────────────────\n`;
+    if (d.outcomes.length) d.outcomes.forEach((o,i) => { t += `Outcome #${i+1}: ${o.name}\n  Domain: ${o.domain || 'General'} | Priority: ${o.priority}\n  Progress: ${o.status}\n  Evidence: ${o.notes || 'No progress notes recorded.'}\n  Revision Flagged: ${o.revision ? 'YES — Plan amendment required' : 'No'}\n\n`; });
+    else t += `No outcomes recorded.\n\n`;
+    t += `IV. HEALTH, SAFETY & RIGHTS\n────────────────────────────────────────────────────────────────\n`;
+    t += `Health Events: ${d.healthEvents === 'yes' ? 'Reported' : 'None reported'}\nNotes: ${d.healthNotes || 'N/A'}\nRights Observation: ${d.rightsObs === 'upheld' ? 'Upheld — no concerns' : 'Concerns identified'}\nNotes: ${d.rightsNotes || 'N/A'}\nCommunity Participation: ${d.community}\nNotes: ${d.communityNotes || 'N/A'}\n\n`;
+    t += `V. INCIDENTS & CRISIS\n────────────────────────────────────────────────────────────────\nIncidents: ${d.incidents === 'yes' ? 'Yes' : 'None'}\nSummary: ${d.incidentNotes || 'N/A'}\nCIMOR Status: ${d.cimorStatus}\n\n`;
+    t += `VI. CONCLUSIONS & RECOMMENDATIONS\n────────────────────────────────────────────────────────────────\nPlan Revision: ${d.planRevision.toUpperCase()}\nRationale: ${d.revisionRationale || 'N/A'}\nOverall Assessment: ${d.quarterAssessment || 'Supports remain effective.'}\nAction Items:\n${d.actions.length ? d.actions.map((a,i) => `  ${i+1}. ${a}`).join('\n') : '  None.'}\n\nNext Review: ${d.nextReview || 'TBD'}\nCoordinator Initials: ${d.sigInitials}\nAdditional Notes: ${d.coordNotes || 'None'}`;
+  }
+  const out = document.getElementById('aiOutput');
+  document.getElementById('aiContent').textContent = t;
+  out.classList.add('visible');
+}
+
+function clearOutput() {
+  resetIdleTimer();
+  document.getElementById('aiContent').innerHTML = '';
+  document.getElementById('aiOutput').classList.remove('visible');
+}
+
+function copyOutput() {
+  resetIdleTimer();
+  navigator.clipboard.writeText(document.getElementById('aiContent').textContent).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.textContent = orig; }, 1800);
+  });
+}
+
+// ── Clear / Wipe ──
+function clearFormClick() {
+  resetIdleTimer();
+  if (!confirm('Clear all form data? This cannot be undone.')) return;
+  clearFormFull();
+}
+
+function clearFormFull() {
+  linkedPcsp = null;
+  outcomes = []; activeOutcomeIdx = 0; svcCount = 0; actionCount = 0;
+  document.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(el => el.value = '');
+  document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+  document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => el.checked = false);
+  document.getElementById('servicesContainer').innerHTML = '';
+  document.getElementById('actionContainer').innerHTML = '';
+  clearOutput();
+  // Reset defaults
+  document.querySelector('input[name="contactType"][value="face_to_face"]').checked = true;
+  document.querySelector('input[name="healthEvents"][value="none"]').checked = true;
+  document.querySelector('input[name="safetyConcerns"][value="none"]').checked = true;
+  document.querySelector('input[name="rightsObs"][value="upheld"]').checked = true;
+  document.querySelector('input[name="community"][value="yes"]').checked = true;
+  document.querySelector('input[name="incidents"][value="none"]').checked = true;
+  document.querySelector('input[name="planRevision"][value="no"]').checked = true;
+  ['doc_isp','doc_svc_logs','doc_provider_notes'].forEach(id => { const el = document.getElementById(id); if (el) el.checked = true; });
+  document.getElementById('year').value = new Date().getFullYear();
+  document.getElementById('reviewDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('quarter').value = 'Q2 — Apr–Jun';
+  document.getElementById('programType').value = 'Individualized Supported Living (ISL)';
+  document.getElementById('purgeSessionBtn').style.display = 'none';
+  document.getElementById('pcspImport').value = '';
+  renderOutcomesSplit();
+  updateProgressBar();
+  checkRevisionBanner();
+}
+
+function triggerSecurityTimeout() {
+  clearFormFull();
+}
+
+// ═══════════════════════════════════════════════════════
+//  ZERO-FOOTPRINT AES-256-GCM CRYPTOGRAPHIC ENGINE
+//  PBKDF2: 600,000 iterations | SHA-256
+//  Envelope: [16-byte Salt] + [12-byte IV] + [Ciphertext]
+// ═══════════════════════════════════════════════════════
+async function exportSecureFile(dataJson, filename, password) {
+  const enc = new TextEncoder();
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const passKey = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]);
+  const aesKey = await crypto.subtle.deriveKey({ name:"PBKDF2", salt, iterations:600000, hash:"SHA-256" }, passKey, { name:"AES-GCM", length:256 }, false, ["encrypt"]);
+  const cipher = await crypto.subtle.encrypt({ name:"AES-GCM", iv }, aesKey, enc.encode(JSON.stringify(dataJson)));
+  const envelope = new Uint8Array(16 + 12 + cipher.byteLength);
+  envelope.set(salt, 0); envelope.set(iv, 16); envelope.set(new Uint8Array(cipher), 28);
+  const url = URL.createObjectURL(new Blob([envelope], { type:"application/octet-stream" }));
+  const a = document.createElement("a"); a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function importSecureFile(fileBuffer, password) {
+  const enc = new TextEncoder();
+  const salt = fileBuffer.slice(0, 16);
+  const iv = fileBuffer.slice(16, 28);
+  const cipher = fileBuffer.slice(28);
+  const passKey = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]);
+  const aesKey = await crypto.subtle.deriveKey({ name:"PBKDF2", salt:new Uint8Array(salt), iterations:600000, hash:"SHA-256" }, passKey, { name:"AES-GCM", length:256 }, false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({ name:"AES-GCM", iv:new Uint8Array(iv) }, aesKey, cipher);
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+function openCryptoModal(mode, data) {
+  cryptoModalMode = mode; cryptoTempData = data;
+  document.getElementById('cryptoPasswordInput').value = '';
+  document.getElementById('cryptoErrorMsg').innerText = '';
+  document.getElementById('cryptoModalTitle').innerText = mode === 'decrypt' ? '🔒 Enter Decryption Password' : '🔒 Set Encryption Password';
+  document.getElementById('cryptoModalDesc').innerText = mode === 'decrypt'
+    ? 'This file contains PHI encrypted to HIPAA standards. Enter the password to decrypt and load into session RAM.'
+    : 'Set a password to encrypt this quarterly review. The .qtr file can only be unlocked with this password.';
+  document.getElementById('cryptoModal').style.display = 'flex';
+  document.getElementById('cryptoPasswordInput').focus();
+}
+
+function closeCryptoModal() {
+  document.getElementById('cryptoModal').style.display = 'none';
+  cryptoTempData = null; cryptoModalMode = '';
+}
+
+async function handleCryptoSubmit() {
+  const pw = document.getElementById('cryptoPasswordInput').value;
+  const errEl = document.getElementById('cryptoErrorMsg');
+  if (!pw) { errEl.innerText = 'Password cannot be empty.'; return; }
+  if (cryptoModalMode === 'decrypt') {
+    try {
+      errEl.innerText = 'Decrypting in RAM…';
+      const data = await importSecureFile(cryptoTempData, pw);
+      closeCryptoModal();
+      loadPcspData(data);
+    } catch {
+      errEl.innerText = 'Decryption failed — incorrect password or corrupted file.';
+    }
+  } else {
+    try {
+      errEl.innerText = 'Encrypting in RAM…';
+      const fd = collectFormData();
+      const d = fd.indivId || 'unnamed';
+      const q = (fd.quarter || 'Q').split(' ')[0];
+      const payload = {
+        ...fd,
+        state_compliance_meta: {
+          state_jurisdiction: 'MO-DMH-DD',
+          county_board: 'Marion County Services for the Developmentally Disabled (MCSDD)',
+          individual_medicaid_dcn: fd.indivId || 'N/A',
+          missouri_waivers_enrolled: [fd.programType],
+          is_audit_ready_package: true
+        },
+        missouri_specific_modules: {
+          mo_cycle_year: fd.year,
+          quarterly_period: fd.quarter,
+          individual_urn: `URN-MO-${fd.indivId || '9923A'}`,
+          utilization_review_metrics: { allocated_budget_spent_percent: null, unauthorized_service_overages: false },
+          missouri_incident_reporting_check: { emt_reporting_logs_reviewed: fd.incidents !== 'yes', emt_narrative: fd.incidentNotes || 'No EMT incidents this quarter' }
+        },
+        last_modified_audit_timestamp: new Date().toISOString()
+      };
+      await exportSecureFile(payload, `review_${d}_${q}_${fd.year}.qtr`, pw);
+      closeCryptoModal();
+    } catch(e) {
+      console.error(e); errEl.innerText = 'Encryption failed.';
+    }
+  }
+}
+
+function triggerSecureExport() {
+  resetIdleTimer();
+  openCryptoModal('encrypt', null);
+}
+
+// ── DOMContentLoaded ──
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('cryptoSubmitBtn').onclick = handleCryptoSubmit;
+  document.getElementById('cryptoPasswordInput').onkeydown = e => { if (e.key === 'Enter') handleCryptoSubmit(); };
+  document.getElementById('reviewDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('year').value = new Date().getFullYear();
+  // Start idle security timer
+  resetIdleTimer();
+  // Initial render
+  renderOutcomesSplit();
+});
+</script>
 </body>
 </html>
