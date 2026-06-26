@@ -323,6 +323,32 @@ input:focus, select:focus, textarea:focus {
     background: rgba(255, 255, 255, 0.05);
 }
 
+/* ── Side-by-Side Validation Grid ── */
+.side-by-side-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 25px;
+}
+.pcsp-panel {
+    background: rgba(255, 215, 0, 0.02);
+    border: 1px dashed var(--border);
+    padding: 20px;
+    border-radius: var(--radius);
+}
+.input-panel {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: var(--radius);
+}
+.btn-warning {
+    background: #ffcc00;
+    color: #000;
+    margin-top: 10px;
+}
+
+
 /* ── Buttons ── */
 .btn {
     padding: 10px 20px;
