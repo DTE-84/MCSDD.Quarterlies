@@ -22,15 +22,23 @@
                     <div class="app-subtitle">DD Case Management & Compliance Engine</div>
                 </div>
             </div>
-            <div class="header-controls">
+            <div class="header-controls" style="display: flex; gap: 10px;">
                 <button class="btn btn-outline" onclick="triggerPcspImport()" style="border-color: #c9a84c; color: #c9a84c;">
                     📂 Fetch Active PCSP Snapshot
                 </button>
-                <input type="file" id="pcspImport" style="display:none" accept=".pcsp" onchange="handlePcspImport(event)">
+                <button class="btn" id="purgeSessionBtn" onclick="triggerSecurityTimeout()" style="display: none; background: rgba(255, 77, 77, 0.1); border: 1px solid var(--danger); color: var(--danger); font-weight: 700;">
+                    🔒 Close & Purge File
+                </button>
+                <input type="file" id="pcspImport" style="display:none" accept=".pcsp,.qtr" onchange="handlePcspImport(event)">
             </div>
         </header>
 
         <main class="main-workspace">
+            <!-- ── Dynamic Revision Warning Banner ── -->
+            <div id="revisionWarningBanner" class="warning-banner" style="display: none;">
+                ⚠️ Submission will automatically flag this Individual's PCSP for a mandatory revision workflow.
+            </div>
+
             <!-- ── Module A: Administrative & Demographics ── -->
             <section class="form-section">
                 <div class="section-title"><span>A</span> Administrative & Demographics (Auto-Populated)</div>
@@ -74,9 +82,30 @@
             <section class="form-section" id="outcomes-section">
                 <div class="section-title"><span>B</span> PCSP Outcome & Goal Tracking</div>
                 <p class="section-hint">Review active goals and document current progress.</p>
-                <div id="outcomesContainer">
-                    <div class="outcome-card" style="text-align: center; color: var(--text-label);">
-                        Fetch a PCSP to populate active outcomes.
+                
+                <!-- Sticky Progress Tracker -->
+                <div class="progress-bar-container" id="progressBarContainer" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-label); margin-bottom: 5px;">
+                        <span>Progress Metrics</span>
+                        <span id="progressBarPercent">0% Complete</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressBarFill" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- Split-Screen Assessment Container -->
+                <div class="outcome-split-screen" id="outcomesSplitScreen">
+                    <!-- Left Sidebar Goal Navigation Tabs -->
+                    <div class="outcome-sidebar" id="outcomeSidebar">
+                        <!-- Navigation tabs loaded dynamically -->
+                    </div>
+                    
+                    <!-- Right Evaluation Editor -->
+                    <div class="outcome-editor" id="outcomeEditor">
+                        <div style="text-align: center; color: var(--text-label); padding: 40px;">
+                            Fetch a PCSP to populate active outcomes.
+                        </div>
                     </div>
                 </div>
             </section>
@@ -164,11 +193,30 @@
                 </div>
                 <div class="btn-bar">
                     <button class="btn btn-primary" onclick="copyNarrative()">📋 Copy JSON Payload</button>
+                    <button class="btn btn-warning" onclick="triggerSecureExport()" style="background: var(--primary); color: #000;">🔒 Export Secure Envelope (.qtr)</button>
                     <button class="btn btn-success" onclick="window.print()">🖨️ Print / Save PDF</button>
                 </div>
             </div>
         </main>
     </div>
+
+    <!-- ── HIPAA Password Modal ── -->
+    <div id="cryptoModal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <h3 id="cryptoModalTitle" class="modal-title">Enter Decryption Password</h3>
+            <p id="cryptoModalDesc" class="modal-desc">This file contains protected health information (PHI) and is encrypted to comply with HIPAA security standards.</p>
+            <div class="field-group" style="margin-top: 15px; text-align: left;">
+                <label>Security Password</label>
+                <input type="password" id="cryptoPasswordInput" placeholder="••••••••" style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid var(--border); background: rgba(0,0,0,0.2); color: var(--text-base);">
+                <div id="cryptoErrorMsg" style="color: var(--danger); font-size: 12px; margin-top: 5px; min-height: 18px;"></div>
+            </div>
+            <div class="modal-actions" style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn btn-outline" onclick="closeCryptoModal()">Cancel</button>
+                <button class="btn btn-success" id="cryptoSubmitBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>
